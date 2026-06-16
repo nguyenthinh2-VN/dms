@@ -32,6 +32,7 @@ public class GetReferralsUseCase {
                         .id(u.getId())
                         .fullName(u.getFullName())
                         .email(u.getWorkEmail())
+                        .referralCode(u.getPersonalReferralCode())
                         .createdAt(u.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());

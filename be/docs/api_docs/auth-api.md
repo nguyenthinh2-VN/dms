@@ -20,7 +20,7 @@
   "password": "Password123!",
   "confirmPassword": "Password123!",
   "invitedByCode": "REF123",
-  "role": "LAWYER"
+  "role": "LAWYER" //Code của role trong DB, không phải name
 }
 ```
 

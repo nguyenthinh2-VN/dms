@@ -27,12 +27,14 @@
         "id": 2,
         "fullName": "Nguyen Van B",
         "email": "userb@example.com",
+        "referralCode": "B2X9A1",
         "createdAt": "2026-06-15T10:00:00Z"
       },
       {
         "id": 3,
         "fullName": "Tran Thi C",
         "email": "userc@example.com",
+        "referralCode": "C9X8B2",
         "createdAt": "2026-06-15T11:00:00Z"
       }
     ]

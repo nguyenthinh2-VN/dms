@@ -11,5 +11,6 @@ public class ReferredUserDto {
     private Long id;
     private String fullName;
     private String email;
+    private String referralCode;
     private OffsetDateTime createdAt;
 }
