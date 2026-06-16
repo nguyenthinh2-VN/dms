@@ -1,6 +1,7 @@
 package com.example.be.presentation.controller;
 
 import com.example.be.application.dto.AuthResponse;
+import com.example.be.application.util.MessageUtils;
 import com.example.be.application.dto.LoginRequest;
 import com.example.be.application.dto.RegisterRequest;
 import com.example.be.application.usecase.LoginUseCase;
@@ -36,8 +37,8 @@ public class AuthController {
         data.put("personalReferralCode", savedUser.getPersonalReferralCode());
 
         Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
-        response.put("message", "Đăng ký thành công");
+        response.put("status", 201);
+        response.put("message", MessageUtils.getMessage("SUCCESS_REGISTER", "Đăng ký thành công"));
         response.put("data", data);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -48,7 +49,8 @@ public class AuthController {
         AuthResponse authResponse = loginUseCase.execute(request);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
+        response.put("status", 200);
+        response.put("message", MessageUtils.getMessage("SUCCESS_LOGIN", "Đăng nhập thành công"));
         response.put("data", authResponse);
 
         return ResponseEntity.ok(response);

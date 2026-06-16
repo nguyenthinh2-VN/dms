@@ -1,5 +1,9 @@
 # User API Docs
 
+> **Lưu ý Đa ngôn ngữ (i18n):**
+> Tất cả các API đều hỗ trợ tham số ngôn ngữ để dịch các thông báo (`message`).
+> Bạn có thể gửi ngôn ngữ mong muốn qua Query Parameter `?lan=TW` hoặc qua HTTP Header `Accept-Language: TW`. Mặc định nếu không gửi là tiếng Việt (`VI`).
+
 ## 1. Lấy danh sách bạn bè đã giới thiệu (Referrals)
 
 **Endpoint:** `GET /api/v1/users/me/referrals`
@@ -12,7 +16,8 @@
 **Response (Success 200 OK):**
 ```json
 {
-  "status": "success",
+  "status": 200,
+  "message": "Thành công",
   "data": {
     "myReferralCode": "A8X2B9",
     "referralLink": "http://localhost:3000/register?ref=A8X2B9",

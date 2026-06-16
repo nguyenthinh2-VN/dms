@@ -1,5 +1,9 @@
 # Authentication API Docs
 
+> **Lưu ý Đa ngôn ngữ (i18n):**
+> Tất cả các API đều hỗ trợ tham số ngôn ngữ để dịch các thông báo lỗi hoặc thông báo thành công (trường `message`).
+> Bạn có thể gửi ngôn ngữ mong muốn qua Query Parameter `?lan=TW` (hoặc `VI`) hoặc qua HTTP Header `Accept-Language: TW`. Mặc định nếu không gửi là tiếng Việt (`VI`).
+
 ## 1. Đăng ký tài khoản (Register)
 
 **Endpoint:** `POST /api/v1/auth/register`
@@ -32,7 +36,7 @@
 **Response (Success 200 OK / 201 Created):**
 ```json
 {
-  "status": "success",
+  "status": 201,
   "message": "Đăng ký thành công",
   "data": {
     "id": "1",
@@ -45,8 +49,8 @@
 **Response (Error 400 Bad Request):**
 ```json
 {
-  "status": "error",
-  "message": "Validation failed",
+  "status": 400,
+  "message": "Validation failed", // Hoặc "驗證失敗" nếu lan=TW
   "errors": {
     "role": "Role không hợp lệ",
     "phoneNumber": "Số điện thoại không đúng định dạng"
@@ -71,7 +75,8 @@
 **Response (Success 200 OK):**
 ```json
 {
-  "status": "success",
+  "status": 200,
+  "message": "Đăng nhập thành công",
   "data": {
     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...",
     "expiresIn": 3600,
@@ -83,7 +88,7 @@
 **Response (Error 401 Unauthorized):**
 ```json
 {
-  "status": "error",
-  "message": "Email hoặc mật khẩu không chính xác"
+  "status": 401,
+  "message": "Tài khoản hoặc mật khẩu không chính xác" // Hoặc "帳號或密碼不正確" nếu lan=TW
 }
 ```

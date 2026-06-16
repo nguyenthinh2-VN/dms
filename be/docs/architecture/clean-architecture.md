@@ -20,3 +20,8 @@ graph TD
 - Độc lập với Framework: Không bị ràng buộc bởi thư viện, có thể thay thế khi cần.
 - Dễ dàng Test: Có thể test Domain logic, Application logic mà không cần DB hay Web server.
 - Độc lập UI và DB: Chuyển từ PostgreSQL sang MySQL hay từ Web sang CLI đều không ảnh hưởng lõi hệ thống.
+
+## Tham khảo thêm
+- **[Giải thích cấu trúc các tầng (Layers Explanation)](layers-explanation.md)**: Chứa ví dụ thực tế về các class hiện có trong codebase của từng tầng.
+- **[Tính năng hiện có (Existing Features)](existing-features.md)**: Danh sách các tính năng Backend đã thực hiện.
+- **[Code Wiki](../../.code-review-graph/wiki/index.md)**: Tài liệu được sinh tự động bởi `code-review-graph` bằng cách phân tích luồng code (Flow) thực tế trong hệ thống.

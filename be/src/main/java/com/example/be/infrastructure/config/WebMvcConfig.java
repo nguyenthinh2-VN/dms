@@ -8,14 +8,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final RateLimitInterceptor rateLimitInterceptor;
+    private final LanguageInterceptor languageInterceptor;
 
-    public WebMvcConfig(RateLimitInterceptor rateLimitInterceptor) {
+    public WebMvcConfig(RateLimitInterceptor rateLimitInterceptor, LanguageInterceptor languageInterceptor) {
         this.rateLimitInterceptor = rateLimitInterceptor;
+        this.languageInterceptor = languageInterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(rateLimitInterceptor)
+                .addPathPatterns("/api/**");
+        registry.addInterceptor(languageInterceptor)
                 .addPathPatterns("/api/**");
     }
 }

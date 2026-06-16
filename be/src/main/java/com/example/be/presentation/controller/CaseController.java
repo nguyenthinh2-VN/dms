@@ -4,6 +4,7 @@ import com.example.be.application.dto.CaseResponse;
 import com.example.be.application.dto.CreateCaseRequest;
 import com.example.be.application.dto.UpdateCaseRequest;
 import com.example.be.application.usecase.CaseUseCase;
+import com.example.be.application.util.MessageUtils;
 import com.example.be.domain.entity.CaseStatus;
 import com.example.be.domain.entity.User;
 import com.example.be.domain.entity.CaseCategory;
@@ -38,7 +39,8 @@ public class CaseController {
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
+        response.put("status", 200);
+        response.put("message", MessageUtils.getMessage("SUCCESS", "Thành công"));
         response.put("data", statuses);
 
         return ResponseEntity.ok(response);
@@ -55,7 +57,8 @@ public class CaseController {
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
+        response.put("status", 200);
+        response.put("message", MessageUtils.getMessage("SUCCESS", "Thành công"));
         response.put("data", statuses);
 
         return ResponseEntity.ok(response);
@@ -67,14 +70,17 @@ public class CaseController {
         try {
             CaseResponse caseResponse = caseUseCase.createCase(request, currentUser);
             Map<String, Object> response = new HashMap<>();
-            response.put("status", "success");
+            response.put("status", 201);
+            response.put("message", MessageUtils.getMessage("SUCCESS", "Thành công"));
             response.put("data", caseResponse);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             Map<String, Object> error = new HashMap<>();
-            error.put("status", "error");
-            error.put("message", e.getMessage());
+            error.put("status", 400);
+            error.put("message", MessageUtils.getMessage("UNKNOWN", e.getMessage()));
             if (e.getMessage() != null && e.getMessage().contains("403_FORBIDDEN")) {
+                error.put("status", 403);
+                error.put("message", MessageUtils.getMessage("FORBIDDEN", "Không có quyền truy cập"));
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
             }
             return ResponseEntity.badRequest().body(error);
@@ -86,7 +92,8 @@ public class CaseController {
         User currentUser = (User) authentication.getPrincipal();
         List<CaseResponse> cases = caseUseCase.getCases(currentUser);
         Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
+        response.put("status", 200);
+        response.put("message", MessageUtils.getMessage("SUCCESS", "Thành công"));
         response.put("data", cases);
         return ResponseEntity.ok(response);
     }
@@ -97,14 +104,17 @@ public class CaseController {
         try {
             CaseResponse caseResponse = caseUseCase.getCaseDetails(id, currentUser);
             Map<String, Object> response = new HashMap<>();
-            response.put("status", "success");
+            response.put("status", 200);
+            response.put("message", MessageUtils.getMessage("SUCCESS", "Thành công"));
             response.put("data", caseResponse);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> error = new HashMap<>();
-            error.put("status", "error");
-            error.put("message", e.getMessage());
+            error.put("status", 400);
+            error.put("message", MessageUtils.getMessage("UNKNOWN", e.getMessage()));
             if (e.getMessage().contains("403_FORBIDDEN")) {
+                error.put("status", 403);
+                error.put("message", MessageUtils.getMessage("FORBIDDEN", "Không có quyền truy cập"));
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
             }
             return ResponseEntity.badRequest().body(error);
@@ -117,14 +127,17 @@ public class CaseController {
         try {
             CaseResponse caseResponse = caseUseCase.updateCase(id, request, currentUser);
             Map<String, Object> response = new HashMap<>();
-            response.put("status", "success");
+            response.put("status", 200);
+            response.put("message", MessageUtils.getMessage("SUCCESS", "Thành công"));
             response.put("data", caseResponse);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> error = new HashMap<>();
-            error.put("status", "error");
-            error.put("message", e.getMessage());
+            error.put("status", 400);
+            error.put("message", MessageUtils.getMessage("UNKNOWN", e.getMessage()));
             if (e.getMessage().contains("403_FORBIDDEN")) {
+                error.put("status", 403);
+                error.put("message", MessageUtils.getMessage("FORBIDDEN", "Không có quyền truy cập"));
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
             }
             return ResponseEntity.badRequest().body(error);

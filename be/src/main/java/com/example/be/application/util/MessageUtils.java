@@ -1,0 +1,31 @@
+package com.example.be.application.util;
+
+public class MessageUtils {
+
+    public static String getMessage(String key, String defaultMessage) {
+        String lan = LanguageContextHolder.getLanguage();
+        if ("TW".equalsIgnoreCase(lan)) {
+            return getTwMessage(key, defaultMessage);
+        }
+        return defaultMessage;
+    }
+
+    private static String getTwMessage(String key, String defaultMessage) {
+        switch (key) {
+            case "SUCCESS": return "成功";
+            case "ERROR": return "錯誤";
+            case "FORBIDDEN": return "您沒有權限存取此資源";
+            case "NOT_FOUND": return "找不到資源";
+            case "UNAUTHORIZED": return "未授權或密碼不正確";
+            case "VALIDATION_FAILED": return "驗證失敗";
+            case "INTERNAL_ERROR": return "內部伺服器錯誤";
+            case "USER_ALREADY_EXISTS": return "使用者已存在";
+            case "INVALID_ROLE": return "無效的角色";
+            default:
+                // Try to translate exact strings if key is not used properly
+                if (defaultMessage.contains("không chính xác")) return "帳號或密碼不正確";
+                if (defaultMessage.contains("đã tồn tại")) return "資料已存在";
+                return defaultMessage;
+        }
+    }
+}

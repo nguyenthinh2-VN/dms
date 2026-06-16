@@ -1,6 +1,7 @@
 package com.example.be.presentation.controller;
 
 import com.example.be.application.dto.ReferralDataResponse;
+import com.example.be.application.util.MessageUtils;
 import com.example.be.application.usecase.GetReferralsUseCase;
 import com.example.be.application.usecase.GetStaffUsersUseCase;
 import com.example.be.domain.entity.User;
@@ -32,7 +33,8 @@ public class UserController {
         ReferralDataResponse referralData = getReferralsUseCase.execute(currentUser);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
+        response.put("status", 200);
+        response.put("message", MessageUtils.getMessage("SUCCESS", "Thành công"));
         response.put("data", referralData);
 
         return ResponseEntity.ok(response);
@@ -41,7 +43,8 @@ public class UserController {
     @GetMapping("/staff")
     public ResponseEntity<Map<String, Object>> getStaff() {
         Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
+        response.put("status", 200);
+        response.put("message", MessageUtils.getMessage("SUCCESS", "Thành công"));
         response.put("data", getStaffUsersUseCase.execute());
         return ResponseEntity.ok(response);
     }

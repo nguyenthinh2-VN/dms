@@ -1,5 +1,9 @@
 # Quản lý Vụ việc (Case Management API Docs)
 
+> **Lưu ý Đa ngôn ngữ (i18n):**
+> Tất cả các API đều hỗ trợ tham số ngôn ngữ. Đặc biệt với các API lấy danh mục (Statuses, Categories), việc gửi ngôn ngữ lên sẽ thay đổi text trả về.
+> Bạn có thể gửi ngôn ngữ mong muốn qua Query Parameter `?lan=TW` hoặc qua HTTP Header `Accept-Language: TW`. Mặc định nếu không gửi là tiếng Việt (`VI`). Mọi thông báo lỗi (`message`) cũng sẽ được dịch tự động.
+
 ## 1. Lấy danh sách nhân sự (Nhóm theo Role)
 **Endpoint:** `GET /api/v1/users/staff`
 
@@ -8,7 +12,8 @@
 **Response (200 OK):**
 ```json
 {
-  "status": "success",
+  "status": 200,
+  "message": "Thành công",
   "data": {
     "LAWYER": [
       {
@@ -31,14 +36,15 @@
 ---
 
 ## 2. Lấy danh sách Trạng thái vụ việc
-**Endpoint:** `GET /api/v1/cases/statuses`
+**Endpoint:** `GET /api/v1/cases/statuses` (Hoặc `?lan=TW` để lấy tiếng Đài Loan)
 
 **Mô tả:** Lấy danh sách 9 trạng thái của vụ việc để render dropdown trên UI.
 
 **Response (200 OK):**
 ```json
 {
-  "status": "success",
+  "status": 200,
+  "message": "Thành công",
   "data": [
     {
       "code": "NEW",
@@ -55,14 +61,15 @@
 ---
 
 ## 3. Lấy danh sách Lĩnh vực (Loại vụ việc)
-**Endpoint:** `GET /api/v1/cases/categories`
+**Endpoint:** `GET /api/v1/cases/categories` (Hoặc `?lan=TW` để lấy tiếng Đài Loan)
 
 **Mô tả:** Lấy danh sách 12 Lĩnh vực pháp lý (Dân sự, Hình sự...) để làm dropdown lúc tạo vụ việc. Cần truyền `code` lên API.
 
 **Response (200 OK):**
 ```json
 {
-  "status": "success",
+  "status": 200,
+  "message": "Thành công",
   "data": [
     {
       "code": "CIVIL",
@@ -118,7 +125,8 @@
 **Response (200 OK):**
 ```json
 {
-  "status": "success",
+  "status": 201,
+  "message": "Thành công",
   "data": {
     "id": 1,
     "generatedTitle": "Tranh chấp đất đai_Tư vấn pháp luật_150626_Nguyen Van A",
@@ -131,8 +139,8 @@
 ```
 
 **Lỗi có thể trả về:**
-- `403 Forbidden`: `{"status": "error", "message": "403_FORBIDDEN: Bạn không có quyền tạo vụ việc."}`
-- `400 Bad Request`: Validation lỗi hoặc sai logic.
+- `403 Forbidden`: `{"status": 403, "message": "Bạn không có quyền truy cập"}`
+- `400 Bad Request`: Validation lỗi hoặc sai logic. `{"status": 400, "message": "..."}`
 
 ---
 
@@ -144,7 +152,8 @@
 **Response (200 OK):**
 ```json
 {
-  "status": "success",
+  "status": 200,
+  "message": "Thành công",
   "data": [
     {
       "id": 1,
@@ -164,7 +173,7 @@
 **Mô tả:** Lấy chi tiết vụ việc kèm theo số tiền tính toán.
 
 **Lỗi có thể trả về:**
-- `403 Forbidden`: `{"status": "error", "message": "403_FORBIDDEN: Bạn không có quyền xem vụ việc này..."}`
+- `403 Forbidden`: `{"status": 403, "message": "Bạn không có quyền truy cập"}`
 
 ---
 
@@ -200,4 +209,4 @@
 - `paymentStatus`: Trạng thái thanh toán (Truyền lên `UNPAID` hoặc `PAID`).
 
 **Lỗi có thể trả về:**
-- `403 Forbidden`: `{"status": "error", "message": "403_FORBIDDEN: Bạn không có quyền sửa hoặc phân công vụ việc này..."}`
+- `403 Forbidden`: `{"status": 403, "message": "Bạn không có quyền truy cập"}`

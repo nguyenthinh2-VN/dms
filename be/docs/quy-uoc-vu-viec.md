@@ -25,16 +25,6 @@ Tách **2 field** độc lập. Lưu `code` (tiếng Anh) trong DB, label chỉ 
 | Phá sản | `BANKRUPTCY` |
 | Khác | `OTHER` *(kèm ô nhập tự do)* |
 
-### 1.2. Hình thức dịch vụ
-
-| Label (vi) | Code |
-|---|---|
-| Tư vấn pháp luật | `CONSULTING` |
-| Tranh tụng | `LITIGATION` |
-| Đại diện ngoài tố tụng | `NON_LITIGATION` |
-| Soạn thảo hồ sơ / hợp đồng | `DRAFTING` |
-| Thủ tục hành chính / giấy phép | `LICENSING` |
-
 ---
 
 ## 2. Format tên vụ việc
