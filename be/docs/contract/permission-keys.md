@@ -85,11 +85,11 @@ Service `PermissionChecker` (đặt trong `application/service/`) đọc qua `Ru
 
 | Role code | Permission gán mặc định |
 |---|---|
-| `ADMIN` | Toàn bộ permission của mọi module (`*.*`). |
-| `MANAGER_LAWYER` | `contract_template.*`, `contract.*` (trừ `archive` của template), `case.list.all`. |
+| `SUPER_ADMIN` | Toàn bộ permission của mọi module (`*.*`). |
+| `ADMIN` | `contract_template.*`, `contract.*` (trừ `archive` của template), `case.list.all`. |
+| `PARTNER` | `contract_template.view`, `contract_template.list`, `contract.view.all`, `contract.list.all`, `contract.download`, `case.list.all`. |
 | `LAWYER` | `contract_template.create`, `contract_template.view`, `contract_template.list`, `contract.create`, `contract.view.own`, `contract.list.own`, `contract.download`, `case.list.own`. |
 | `INTERN_LAWYER` | `contract_template.view`, `contract_template.list`, `contract.view.own`, `contract.list.own`, `contract.download`, `case.list.own`. |
-| `PARTNER` | `contract.view.own`, `contract.list.own`, `contract.download`, `case.list.own`. |
 | `TRAINEE` | `case.list.own`. |
 
 > **Lưu ý:** Đây là **mặc định**. Admin vẫn có thể vào trang quản lý quyền cấp/thu hồi từng permission cho từng user qua bảng `rules (user_id, permission_id, status)`. Pipeline check ở mục 3 đã hỗ trợ điều này.
