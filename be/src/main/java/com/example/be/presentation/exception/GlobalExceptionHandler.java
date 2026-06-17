@@ -46,6 +46,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(response);
     }
 
+    @ExceptionHandler(com.example.be.domain.exception.ForbiddenException.class)
+    public ResponseEntity<Map<String, Object>> handleForbiddenException(com.example.be.domain.exception.ForbiddenException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", 403);
+        response.put("message", MessageUtils.getMessage("FORBIDDEN", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
     @ExceptionHandler({UserAlreadyExistsException.class, InvalidRoleException.class})
     public ResponseEntity<Map<String, Object>> handleDomainExceptions(RuntimeException ex) {
         Map<String, Object> response = new HashMap<>();

@@ -21,6 +21,11 @@ public class MessageUtils {
             case "INTERNAL_ERROR": return "內部伺服器錯誤";
             case "USER_ALREADY_EXISTS": return "使用者已存在";
             case "INVALID_ROLE": return "無效的角色";
+            case "FIELD_TYPE_TEXT": return "文字";
+            case "FIELD_TYPE_NUMBER": return "數字";
+            case "FIELD_TYPE_DATE": return "日期";
+            case "FIELD_TYPE_MONEY": return "貨幣";
+            case "FIELD_TYPE_PARAGRAPH": return "段落";
             default:
                 // Try to translate exact strings if key is not used properly
                 if (defaultMessage.contains("không chính xác")) return "帳號或密碼不正確";

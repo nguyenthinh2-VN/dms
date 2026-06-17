@@ -11,11 +11,17 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
 
 app:
   rate-limit:
     capacity: 3
     minutes: 1
+  contract:
+    storage-path: ${CONTRACT_STORAGE_PATH:./storage/contracts}
 
 jwt:
   secret: ${JWT_SECRET}
