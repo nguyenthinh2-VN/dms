@@ -32,6 +32,13 @@ public class JpaPermissionRepositoryImpl implements PermissionRepository {
         return toDomainEntity(springDataPermissionRepository.save(entity));
     }
 
+    @Override
+    public java.util.List<Permission> findAll() {
+        return springDataPermissionRepository.findAll().stream()
+                .map(this::toDomainEntity)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     private Permission toDomainEntity(PermissionJpaEntity jpaEntity) {
         return Permission.builder()
                 .id(jpaEntity.getId())

@@ -15,16 +15,58 @@ public class DataInitializer implements CommandLineRunner {
 
     private final SpringDataRoleRepository roleRepository;
     private final SpringDataPermissionRepository permissionRepository;
+    private final com.example.be.infrastructure.persistence.repository.SpringDataUserRepository userRepository;
+    private final com.example.be.infrastructure.persistence.repository.SpringDataRuleRepository ruleRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
-    public DataInitializer(SpringDataRoleRepository roleRepository, SpringDataPermissionRepository permissionRepository) {
+    public DataInitializer(SpringDataRoleRepository roleRepository, 
+                           SpringDataPermissionRepository permissionRepository,
+                           com.example.be.infrastructure.persistence.repository.SpringDataUserRepository userRepository,
+                           com.example.be.infrastructure.persistence.repository.SpringDataRuleRepository ruleRepository,
+                           org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
+        this.userRepository = userRepository;
+        this.ruleRepository = ruleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) {
         initRoles();
         seedPermissions();
+        initSuperAdmin();
+    }
+
+    private void initSuperAdmin() {
+        RoleJpaEntity superAdminRole = roleRepository.findByCode("SUPER_ADMIN").orElseThrow();
+        
+        if (userRepository.findByWorkEmail("admin@dms.com").isEmpty()) {
+            com.example.be.infrastructure.persistence.entity.UserJpaEntity admin = com.example.be.infrastructure.persistence.entity.UserJpaEntity.builder()
+                    .fullName("Super Admin")
+                    .workEmail("admin@dms.com")
+                    .phoneNumber("0000000000")
+                    .position("Administrator")
+                    .password(passwordEncoder.encode("123456"))
+                    .status("ACTIVE")
+                    .role(superAdminRole)
+                    .personalReferralCode("ADMIN-REF")
+                    .build();
+            
+            admin = userRepository.save(admin);
+            System.out.println("Inserted default SUPER_ADMIN user: admin@dms.com");
+
+            List<PermissionJpaEntity> allPermissions = permissionRepository.findAll();
+            for (PermissionJpaEntity permission : allPermissions) {
+                com.example.be.infrastructure.persistence.entity.RuleJpaEntity rule = com.example.be.infrastructure.persistence.entity.RuleJpaEntity.builder()
+                        .userId(admin.getId())
+                        .permissionId(permission.getId())
+                        .status("GRANTED")
+                        .build();
+                ruleRepository.save(rule);
+            }
+            System.out.println("Granted all permissions to SUPER_ADMIN.");
+        }
     }
 
     private void initRoles() {
@@ -57,7 +99,12 @@ public class DataInitializer implements CommandLineRunner {
                 new PermissionData("contract_template.view", "Xem chi tiết mẫu (gồm field schema)"),
                 new PermissionData("contract_template.list", "Xem danh sách mẫu"),
                 new PermissionData("contract_template.update", "Sửa mẫu (tạo version mới)"),
-                new PermissionData("contract_template.archive", "Chuyển mẫu sang ARCHIVED")
+                new PermissionData("contract_template.archive", "Chuyển mẫu sang ARCHIVED"),
+                new PermissionData("user.create", "Tạo tài khoản mới"),
+                new PermissionData("user.update", "Cập nhật tài khoản"),
+                new PermissionData("user.view", "Xem chi tiết tài khoản"),
+                new PermissionData("user.list", "Xem danh sách tài khoản"),
+                new PermissionData("user.update_status", "Khóa / mở khóa tài khoản")
         );
 
         for (PermissionData data : permissions) {

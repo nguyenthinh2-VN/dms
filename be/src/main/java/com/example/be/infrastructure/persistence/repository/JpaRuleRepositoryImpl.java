@@ -40,6 +40,11 @@ public class JpaRuleRepositoryImpl implements RuleRepository {
         springDataRuleRepository.deleteByUserIdAndPermissionId(userId, permissionId);
     }
 
+    @Override
+    public void deleteByUserId(Long userId) {
+        springDataRuleRepository.deleteByUserId(userId);
+    }
+
     private Rule toDomainEntity(RuleJpaEntity jpaEntity) {
         return Rule.builder()
                 .id(jpaEntity.getId())

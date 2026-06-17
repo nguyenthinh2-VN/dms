@@ -1,6 +1,6 @@
 package com.example.be.application.usecase;
 
-import com.example.be.application.dto.RegisterRequest;
+import com.example.be.application.dto.auth.RegisterRequest;
 import com.example.be.application.port.out.PasswordEncoderPort;
 import com.example.be.domain.entity.Role;
 import com.example.be.domain.entity.User;

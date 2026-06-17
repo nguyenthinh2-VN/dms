@@ -8,4 +8,5 @@ public interface RuleRepository {
     Rule save(Rule rule);
     List<Rule> findByUserId(Long userId);
     void deleteByUserIdAndPermissionId(Long userId, Long permissionId);
+    void deleteByUserId(Long userId);
 }

@@ -74,6 +74,12 @@ public class JpaUserRepositoryImpl implements UserRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public org.springframework.data.domain.Page<User> findAll(org.springframework.data.domain.Pageable pageable) {
+        return springDataUserRepository.findAll(pageable)
+                .map(this::toDomainEntity);
+    }
+
     private UserJpaEntity toJpaEntity(User user) {
         RoleJpaEntity roleJpa = null;
         if (user.getRole() != null) {

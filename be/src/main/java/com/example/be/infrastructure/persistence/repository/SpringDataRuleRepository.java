@@ -10,4 +10,5 @@ import java.util.List;
 public interface SpringDataRuleRepository extends JpaRepository<RuleJpaEntity, Long> {
     List<RuleJpaEntity> findByUserId(Long userId);
     void deleteByUserIdAndPermissionId(Long userId, Long permissionId);
+    void deleteByUserId(Long userId);
 }

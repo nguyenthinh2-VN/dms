@@ -1,9 +1,9 @@
 package com.example.be.presentation.controller;
 
-import com.example.be.application.dto.AuthResponse;
+import com.example.be.application.dto.auth.AuthResponse;
 import com.example.be.application.util.MessageUtils;
-import com.example.be.application.dto.LoginRequest;
-import com.example.be.application.dto.RegisterRequest;
+import com.example.be.application.dto.auth.LoginRequest;
+import com.example.be.application.dto.auth.RegisterRequest;
 import com.example.be.application.usecase.LoginUseCase;
 import com.example.be.application.usecase.RegisterUseCase;
 import com.example.be.domain.entity.User;

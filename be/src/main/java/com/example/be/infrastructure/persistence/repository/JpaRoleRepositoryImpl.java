@@ -28,6 +28,13 @@ public class JpaRoleRepositoryImpl implements RoleRepository {
                 .map(this::toDomainEntity);
     }
 
+    @Override
+    public java.util.List<Role> findAll() {
+        return springDataRoleRepository.findAll().stream()
+                .map(this::toDomainEntity)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     private Role toDomainEntity(RoleJpaEntity jpaEntity) {
         return Role.builder()
                 .id(jpaEntity.getId())

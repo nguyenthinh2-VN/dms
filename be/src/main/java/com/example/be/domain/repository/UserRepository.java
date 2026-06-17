@@ -4,6 +4,9 @@ import com.example.be.domain.entity.User;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 public interface UserRepository {
     User save(User user);
     Optional<User> findById(Long id);
@@ -14,4 +17,5 @@ public interface UserRepository {
     boolean existsByPersonalReferralCode(String personalReferralCode);
     List<User> findByInvitedByCode(String invitedByCode);
     List<User> findAll();
+    Page<User> findAll(Pageable pageable);
 }

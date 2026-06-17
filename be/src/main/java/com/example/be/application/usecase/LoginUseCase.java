@@ -1,7 +1,7 @@
 package com.example.be.application.usecase;
 
-import com.example.be.application.dto.AuthResponse;
-import com.example.be.application.dto.LoginRequest;
+import com.example.be.application.dto.auth.AuthResponse;
+import com.example.be.application.dto.auth.LoginRequest;
 import com.example.be.application.port.out.JwtPort;
 import com.example.be.application.port.out.PasswordEncoderPort;
 import com.example.be.domain.entity.User;
