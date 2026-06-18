@@ -34,16 +34,17 @@ Hoặc khi cần phân scope:
 | `contract_template.update` | Sửa mẫu (tạo version mới). |
 | `contract_template.archive` | Chuyển mẫu sang `ARCHIVED`. |
 
-### 2.2. Contract (UC2)
+### 2.2. Contract (Hợp đồng đã sinh ra)
 
 | Code | Mô tả |
 |---|---|
 | `contract.create` | Tạo hợp đồng từ mẫu (preview + lưu). |
-| `contract.view.own` | Xem hợp đồng do mình tạo / được phân công. |
-| `contract.view.all` | Xem mọi hợp đồng (cấp Admin/Manager). |
-| `contract.list.own` | Danh sách hợp đồng của mình. |
-| `contract.list.all` | Danh sách toàn bộ hợp đồng. |
-| `contract.download` | Tải file `.docx` / `.pdf` của hợp đồng được phép xem. |
+| `contract.view` | Xem chi tiết hợp đồng và HTML preview. |
+| `contract.list` | Xem danh sách hợp đồng (có thể kèm filter theo legalCaseId). |
+| `contract.list.all` | Xem toàn bộ danh sách hợp đồng hệ thống (Dành cho Admin). |
+| `contract.update` | Cập nhật dữ liệu hợp đồng (Sửa data json). |
+| `contract.delete` | Xóa hợp đồng khỏi hệ thống. |
+| `contract.download` | Tải file `.docx` / `.pdf` của hợp đồng. |
 
 ### 2.3. Case (UC3 — danh sách vụ việc dùng cho UC2 attach)
 

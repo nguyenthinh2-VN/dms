@@ -1,36 +1,39 @@
-# Các chức năng hiện có trong hệ thống (Features Overview)
+# Danh sách các tính năng hiện tại (Existing Features)
 
-Tài liệu này tổng hợp các tính năng và module đã được hoàn thiện trong hệ thống (Backend).
+Hệ thống Document Management System (DMS) được thiết kế xoay quanh nghiệp vụ pháp lý, quản lý hợp đồng và phân quyền động.
 
-## 1. Module Xác thực & Người dùng (Authentication & Users)
-- **Đăng ký (Register):** Đăng ký tài khoản người dùng mới kèm theo hệ thống mã giới thiệu (Referral Code). Cho phép chọn các Role (Luật sư, Thực tập sinh, Partner, ...).
-- **Đăng nhập (Login):** Trả về JWT Token để truy cập các API yêu cầu xác thực.
-- **Hệ thống Referral:** Tự động tạo Referral Code cho mỗi User. Hỗ trợ API `GET /api/v1/users/me/referrals` để lấy link giới thiệu và danh sách người dùng đã được giới thiệu.
-- **Quản lý Người dùng (User Management):** API CRUD cung cấp tính năng xem danh sách người dùng, cập nhật trạng thái hoạt động (Active/Inactive), cập nhật thông tin cá nhân.
-- **Phân quyền nâng cao (RBAC):** Hệ thống phân quyền động thông qua `Role`, `Permission`, và `Rule`. Cho phép kiểm tra quyền (`PermissionChecker`) và gán quyền (`assignPermissions`).
-- **Danh sách nhân sự (Staff):** Cung cấp API để Frontend lấy danh sách nhân sự phân loại theo chức danh (Lawyer, Partner, Intern...) phục vụ việc assign Vụ việc.
+## 1. Module Authentication & Authorization (Phân quyền động)
 
-## 2. Module Quản lý Vụ việc (Case Management)
-- **Danh mục hệ thống:** API cung cấp danh sách Loại vụ việc (Category) và Trạng thái vụ việc (Status). Hỗ trợ hiển thị text theo đa ngôn ngữ (VI, TW).
-- **Tạo Vụ việc:** Lưu thông tin vụ việc, tính toán tỉ lệ % chia hoa hồng cho người phụ trách, đối tác, người giới thiệu, và số tiền thực nhận (Net Value). Tự động gán người tạo làm luật sư xử lý chính và tự động sinh tiêu đề vụ việc.
-- **Lấy danh sách Vụ việc:** Phân quyền hiển thị (Admin xem toàn bộ, các role khác chỉ xem vụ việc có liên quan/gắn tên).
-- **Xem chi tiết Vụ việc:** Kiểm tra quyền (Authorization) trước khi trả về chi tiết.
-- **Cập nhật & Phân công:** Sửa thông tin hoặc phân công thêm nhân sự. Có kiểm tra quyền truy cập.
+- **Authentication:** Đăng nhập, sinh JWT Token.
+- **Dynamic RBAC (Role-Based Access Control):** 
+  - Thay vì hardcode kiểm tra `ROLE_ADMIN`, hệ thống sử dụng `PermissionChecker` để kiểm tra quyền ở mức độ chi tiết (hạt mịn - fine-grained) thông qua các `permission.code` như `contract.create`, `user.list`.
+  - Hỗ trợ gán permission mặc định cho các Role: `SUPER_ADMIN`, `ADMIN`, `PARTNER`, `LAWYER`, `INTERN_LAWYER`, `TRAINEE`.
+  - Quản trị viên có thể gán/thu hồi quyền cá nhân hóa cho từng user thông qua bảng `rules`.
 
-## 3. Module Biểu mẫu Hợp đồng (Contract Templates)
-- **Quản lý Mẫu hợp đồng:** Tạo, cập nhật, lưu trữ file `.docx` mẫu hợp đồng (`ContractTemplateUseCase`). Lưu trữ file qua `LocalContractFileStorage`.
-- **Phân tích File Docx:** Tự động phân tích file upload (`DocxPlaceholderExtractor`) để trích xuất các biến (placeholders) và tự động dự đoán loại dữ liệu (Text, Date, Number...).
-- **Chuyển đổi Docx sang HTML:** Hỗ trợ render nội dung docx lên giao diện (`DocxToHtmlConverter`).
-- **Trường dữ liệu động (Template Fields):** Lưu các cấu hình liên quan đến vị trí cần điền dữ liệu động trong biểu mẫu hợp đồng.
+## 2. Module Quản lý Mẫu Hợp đồng (Contract Template)
 
-## 4. Hệ thống Cốt lõi & Middleware (Cross-cutting Concerns)
-- **Kiến trúc Clean Architecture:** Chia rẽ các phần (Domain, Application, Infrastructure, Presentation), đảm bảo logic cốt lõi hoàn toàn độc lập với Framework và Database.
-- **Đa ngôn ngữ (i18n):** Hỗ trợ Header `Accept-Language` và Query Param `?lan=` thông qua `LanguageInterceptor`. `MessageUtils` giúp dịch message tự động (Ví dụ: dịch các lỗi chuẩn và tên Enum sang tiếng Đài Loan).
-- **Xử lý Exception tập trung:** `GlobalExceptionHandler` bắt tất cả các lỗi trong hệ thống và chuẩn hóa cấu trúc HTTP Response (Status codes: 400, 401, 403, 500) kết hợp đa ngôn ngữ.
-- **Rate Limiting:** Bảo vệ các API (`/api/**`) bằng `RateLimitInterceptor`, sử dụng Bucket4j để chống Spam/DDoS.
-- **Spring Security & JWT:** Bảo mật stateless, lọc Request bằng Token. Đã cấu hình phân quyền (Role-based access).
+- **Upload & Quản lý:** Tải lên các file `.docx` chứa các biến đánh dấu (ví dụ: `{{CUSTOMER_NAME}}`).
+- **Tự động bóc tách (Field Extraction):** Hệ thống tự động phân tích file DOCX để tìm các field cần điền và lưu thành cấu trúc schema động (Metadata).
+- **Versioning:** Hỗ trợ lưu trữ nhiều phiên bản (version) cho cùng một mẫu hợp đồng.
+- **Workflow:** Có các trạng thái (DRAFT, ACTIVE, ARCHIVED).
 
-## 5. Tài liệu Kỹ thuật
-- **Swagger / API Docs:** Có sẵn trong `docs/api_docs/`.
-- **Enum Mapping:** Tài liệu cung cấp cách đọc/hiểu các Enum code và map với Text phía Frontend trong `enum-mapping-docs.md`.
-- **Knowledge Graph Wiki:** Tài liệu cấu trúc Code tự động tạo (trong folder `.code-review-graph/wiki`) giúp hiểu rõ dòng chảy (Flow) của hệ thống.
+## 3. Module Sinh và Quản lý Hợp đồng (Contract Generation)
+
+- **Dynamic Form Data:** Nhận dữ liệu do người dùng nhập từ form động (dựa trên schema của Template).
+- **Preview Hợp đồng (Xem trước):** Merge dữ liệu vào file DOCX mẫu và convert sang HTML để hiển thị trực tiếp trên trình duyệt mà không cần tải file về.
+- **Create & Finalize:**
+  - Merge dữ liệu an toàn vào cấu trúc XML của file DOCX (Tránh lỗi thẻ XML nhờ `XmlUtils` và regex chống đứt gãy thẻ `w:t`).
+  - Tự động convert sang định dạng PDF sử dụng `XDocReport` (Tối ưu tốc độ, khắc phục hoàn toàn lỗi Font/NullPointer của Apache FOP).
+  - Tự động lưu trữ cả bản DOCX và bản PDF vào ổ đĩa thông qua `ContractFileStorage`.
+- **Download:** Cung cấp API tải xuống file DOCX và PDF chính xác với HTTP Header `Content-Disposition: attachment`.
+- **Liên kết nghiệp vụ:** Cho phép đính kèm hợp đồng vào một "Vụ việc" (Legal Case) thông qua `legalCaseId`.
+
+## 4. Module Quản lý File (Storage)
+
+- **ContractFileStorage:** Service chuyên biệt xử lý việc ghi/đọc/xóa file trên ổ cứng vật lý.
+- Tương lai có thể dễ dàng cắm (plug) Amazon S3 hoặc MinIO nhờ cấu trúc Hexagonal Architecture.
+
+## 5. Module Quản lý Vụ việc (Legal Case) - (Đang hoàn thiện)
+
+- Cung cấp API lấy danh sách vụ việc để gắn vào Hợp đồng.
+- Phân quyền theo scope: Xem danh sách toàn bộ vụ việc (Admin/Manager) hoặc Xem danh sách vụ việc được phân công (Lawyer/Trainee).
