@@ -26,6 +26,9 @@ public class MessageUtils {
             case "FIELD_TYPE_DATE": return "日期";
             case "FIELD_TYPE_MONEY": return "貨幣";
             case "FIELD_TYPE_PARAGRAPH": return "段落";
+            case "CONTRACT_STATUS_DRAFT": return "草稿";
+            case "CONTRACT_STATUS_FINALIZED": return "已完成";
+            case "CONTRACT_STATUS_ARCHIVED": return "已封存";
             default:
                 // Try to translate exact strings if key is not used properly
                 if (defaultMessage.contains("không chính xác")) return "帳號或密碼不正確";

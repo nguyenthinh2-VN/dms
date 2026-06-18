@@ -1,0 +1,10 @@
+<fop version="1.0">
+    <renderers>
+        <renderer mime="application/pdf">
+            <fonts>
+                <!-- auto-detect OS fonts to support Vietnamese (e.g. Arial, Times New Roman, Tahoma) -->
+                <auto-detect/>
+            </fonts>
+        </renderer>
+    </renderers>
+</fop>

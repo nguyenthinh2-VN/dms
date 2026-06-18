@@ -24,4 +24,4 @@ graph TD
 ## Tham khảo thêm
 - **[Giải thích cấu trúc các tầng (Layers Explanation)](layers-explanation.md)**: Chứa ví dụ thực tế về các class hiện có trong codebase của từng tầng.
 - **[Tính năng hiện có (Existing Features)](existing-features.md)**: Danh sách các tính năng Backend đã thực hiện.
-- **[Code Wiki](../../.code-review-graph/wiki/index.md)**: Tài liệu được sinh tự động bởi `code-review-graph` bằng cách phân tích luồng code (Flow) thực tế trong hệ thống.
+- **[Code Wiki](../../../.code-review-graph/wiki/index.md)**: Tài liệu được sinh tự động bởi `code-review-graph` bằng cách phân tích luồng code (Flow) thực tế trong hệ thống.
