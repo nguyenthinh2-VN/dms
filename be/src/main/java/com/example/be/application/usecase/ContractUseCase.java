@@ -59,34 +59,6 @@ public class ContractUseCase {
         this.permissionChecker = permissionChecker;
     }
 
-    public MapResponse preview(PreviewContractRequest request, Long currentUserId) throws Exception {
-        User user = userRepository.findById(currentUserId).orElseThrow(() -> new IllegalArgumentException("User không tồn tại"));
-        permissionChecker.requirePermission(user, "contract.create");
-        
-        ContractTemplate template = templateRepository.findById(request.getTemplateId())
-                .orElseThrow(() -> new IllegalArgumentException("Template không tồn tại"));
-                
-        if (template.getStatus() != TemplateStatus.ACTIVE) {
-            throw new IllegalArgumentException("Template không còn ACTIVE");
-        }
-
-        template.setFields(templateFieldRepository.findByTemplateId(template.getId()));
-        validator.validate(template.getFields(), request.getData());
-
-        byte[] templateDocx = fileStorage.load(template.getStoragePath());
-        byte[] mergedDocx = mergeService.merge(templateDocx, request.getData());
-        
-        org.docx4j.openpackaging.packages.WordprocessingMLPackage wordMLPackage;
-        try (java.io.ByteArrayInputStream is = new java.io.ByteArrayInputStream(mergedDocx)) {
-            wordMLPackage = org.docx4j.openpackaging.packages.WordprocessingMLPackage.load(is);
-        }
-        String html = htmlConverter.convertToHtml(wordMLPackage);
-        
-        MapResponse response = new MapResponse();
-        response.put("renderedHtml", html);
-        return response;
-    }
-
     @Transactional
     public ContractResponse create(CreateContractRequest request, Long currentUserId, String creatorName) throws Exception {
         User user = userRepository.findById(currentUserId).orElseThrow(() -> new IllegalArgumentException("User không tồn tại"));
@@ -209,6 +181,5 @@ public class ContractUseCase {
                 .build();
     }
     
-    // Tạm thời helper class MapResponse
-    public static class MapResponse extends java.util.HashMap<String, Object> {}
+
 }

@@ -57,6 +57,22 @@ public class ContractTemplateUseCase {
         }
         
         DocxPlaceholderExtractor.ExtractedData extractedData = docxPlaceholderExtractor.extract(file.getInputStream());
+        
+        // Normalize placeholders so they are not split across XML tags
+        org.docx4j.model.datastorage.migration.VariablePrepare.prepare(extractedData.wordMLPackage);
+        String xml = org.docx4j.XmlUtils.marshaltoString(extractedData.wordMLPackage.getMainDocumentPart().getJaxbElement(), true, false);
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\{\\{(.*?)\\}\\}");
+        java.util.regex.Matcher matcher = pattern.matcher(xml);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            String matched = matcher.group(0);
+            String keyWithoutTags = matched.replaceAll("<[^>]+>", "");
+            matcher.appendReplacement(sb, java.util.regex.Matcher.quoteReplacement(keyWithoutTags));
+        }
+        matcher.appendTail(sb);
+        Object obj = org.docx4j.XmlUtils.unmarshalString(sb.toString());
+        extractedData.wordMLPackage.getMainDocumentPart().setJaxbElement((org.docx4j.wml.Document) obj);
+
         String htmlContent = docxToHtmlConverter.convertToHtml(extractedData.wordMLPackage);
 
         return AnalyzeTemplateResponse.builder()
@@ -77,6 +93,22 @@ public class ContractTemplateUseCase {
         CreateTemplateRequest metadata = objectMapper.readValue(metadataJson, CreateTemplateRequest.class);
 
         DocxPlaceholderExtractor.ExtractedData extractedData = docxPlaceholderExtractor.extract(file.getInputStream());
+        
+        // Normalize placeholders so they are not split across XML tags
+        org.docx4j.model.datastorage.migration.VariablePrepare.prepare(extractedData.wordMLPackage);
+        String xml = org.docx4j.XmlUtils.marshaltoString(extractedData.wordMLPackage.getMainDocumentPart().getJaxbElement(), true, false);
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\{\\{(.*?)\\}\\}");
+        java.util.regex.Matcher matcher = pattern.matcher(xml);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            String matched = matcher.group(0);
+            String keyWithoutTags = matched.replaceAll("<[^>]+>", "");
+            matcher.appendReplacement(sb, java.util.regex.Matcher.quoteReplacement(keyWithoutTags));
+        }
+        matcher.appendTail(sb);
+        Object obj = org.docx4j.XmlUtils.unmarshalString(sb.toString());
+        extractedData.wordMLPackage.getMainDocumentPart().setJaxbElement((org.docx4j.wml.Document) obj);
+
         String htmlContent = docxToHtmlConverter.convertToHtml(extractedData.wordMLPackage);
 
         int version = 1;
@@ -173,6 +205,22 @@ public class ContractTemplateUseCase {
 
             int newVersion = template.getVersion() + 1;
             DocxPlaceholderExtractor.ExtractedData extractedData = docxPlaceholderExtractor.extract(file.getInputStream());
+            
+            // Normalize placeholders so they are not split across XML tags
+            org.docx4j.model.datastorage.migration.VariablePrepare.prepare(extractedData.wordMLPackage);
+            String xml = org.docx4j.XmlUtils.marshaltoString(extractedData.wordMLPackage.getMainDocumentPart().getJaxbElement(), true, false);
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\{\\{(.*?)\\}\\}");
+            java.util.regex.Matcher matcher = pattern.matcher(xml);
+            StringBuffer sb = new StringBuffer();
+            while (matcher.find()) {
+                String matched = matcher.group(0);
+                String keyWithoutTags = matched.replaceAll("<[^>]+>", "");
+                matcher.appendReplacement(sb, java.util.regex.Matcher.quoteReplacement(keyWithoutTags));
+            }
+            matcher.appendTail(sb);
+            Object obj = org.docx4j.XmlUtils.unmarshalString(sb.toString());
+            extractedData.wordMLPackage.getMainDocumentPart().setJaxbElement((org.docx4j.wml.Document) obj);
+
             String htmlContent = docxToHtmlConverter.convertToHtml(extractedData.wordMLPackage);
 
             String storagePath = "templates/" + template.getCode() + "_v" + newVersion + ".docx";

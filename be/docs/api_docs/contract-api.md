@@ -8,36 +8,40 @@ Tài liệu này cung cấp hướng dẫn chi tiết từng bước (Step-by-st
 
 Luồng nghiệp vụ được thiết kế gồm 4 bước chính: **Lấy cấu hình mẫu -> Nhập liệu (Dynamic Form) -> Xem trước (Preview) -> Tạo và Lưu trữ (Create & Finalize)**.
 
-### Bước 1: Lấy cấu hình các trường cần điền (Dynamic Form Builder)
+### Bước 1: Lấy HTML của Mẫu hợp đồng và tạo Form Inline
 
-**Mục đích:** Khi người dùng chọn một Mẫu hợp đồng (Template), FE cần biết mẫu này yêu cầu những thông tin gì (Tên khách hàng, Ngày ký, Số tiền,...) để hiển thị Form động.
+**Mục đích:** FE nhận mã HTML gốc (đã được giữ nguyên định dạng từ bản Word) và biến các biến `{{FIELD}}` thành các thẻ `<input>` để user nhập liệu trực tiếp trên mặt văn bản.
 
-1. **Gọi API:** `GET /api/v1/contract-templates/{templateId}` (API này thuộc module Quản lý Template).
-2. **Xử lý Response:** Trong object response, tìm mảng `fields`. Mỗi phần tử trong mảng đại diện cho một ô nhập liệu.
-3. **Render UI tương ứng:** Dựa vào `fieldType` của từng phần tử, FE render input phù hợp:
-   - Nếu `fieldType === 'TEXT'`: Hiển thị `<input type="text" />`.
-   - Nếu `fieldType === 'NUMBER'` hoặc `MONEY`: Hiển thị `<input type="number" />` (Nên thêm mask format định dạng tiền tệ).
-   - Nếu `fieldType === 'DATE'`: Hiển thị `<input type="date" />` hoặc dùng DatePicker component.
-   - Nếu `fieldType === 'SELECT'`: Hiển thị Dropdown `<select>`.
-   - Dùng thuộc tính `label` làm tên hiển thị, `required` để thêm validate bắt buộc nhập.
+1. **Gọi API:** `GET /api/v1/contract-templates/{templateId}`.
+2. **Xử lý Response:** 
+   - Lấy thuộc tính `htmlContent` (chứa toàn bộ nội dung file Word). Backend đã đảm bảo các biến `{{FIELD_NAME}}` được gộp dính liền khối (không bị đứt gãy HTML).
+   - Lấy mảng `fields` để biết danh sách các biến cần thay thế.
+3. **Thay thế chuỗi (Replace):** Dùng Javascript quét chuỗi `htmlContent` và thay thế `{{FIELD_NAME}}` thành `<input>`:
+   ```javascript
+   let finalHtml = template.htmlContent;
+   template.fields.forEach(f => {
+     const regex = new RegExp(`{{${f.fieldKey}}}`, 'g');
+     // Replace bằng input, gán name để lúc submit dễ lấy data
+     finalHtml = finalHtml.replace(regex, `<input name="${f.fieldKey}" placeholder="Nhập ${f.label}..." class="contract-input" />`);
+   });
+   ```
+4. **Render UI:** Đưa `finalHtml` vào trình duyệt bằng cách dùng `dangerouslySetInnerHTML` hoặc gắn vào `innerHTML` của một thẻ `<div>`.
 
-### Bước 2: Xem trước hợp đồng (Preview)
+### Bước 2: Nhập liệu và Lưu hợp đồng (Finalize)
 
-**Mục đích:** Người dùng muốn xem các thông tin họ vừa nhập sẽ hiển thị ra sao trên văn bản hợp đồng thực tế, TRƯỚC KHI bấm "Lưu".
+**Mục đích:** Người dùng nhập trực tiếp trên văn bản HTML. Khi bấm "Tạo hợp đồng", hệ thống sẽ gửi data lên BE để lưu thành file cứng (DOCX, PDF) và lưu vào CSDL.
 
-1. **Thu thập dữ liệu:** FE map toàn bộ dữ liệu người dùng nhập trong form thành một object JSON dạng key-value. Key chính là `fieldKey` từ Bước 1.
-   *Ví dụ:* `{"contract_no": "HD-01", "contract_date": "2026-06-18"}`
-2. **Gọi API:** `POST /api/v1/contracts/preview`
-3. **Hiển thị Preview:** API trả về thuộc tính `renderedHtml` (chứa toàn bộ nội dung file Word đã được convert sang HTML). FE lấy chuỗi HTML này bind vào một thẻ `<div dangerouslySetInnerHTML>` hoặc `<iframe>` để hiển thị trực quan. (Không có file nào bị lưu vào database lúc này).
+1. **Thu thập dữ liệu:** Khi user submit, FE dùng Javascript select tất cả các input trong form HTML để lấy giá trị:
+   ```javascript
+   const formData = {};
+   document.querySelectorAll('.contract-input').forEach(input => {
+     formData[input.name] = input.value;
+   });
+   ```
+2. **Gọi API:** `POST /api/v1/contracts` (truyền `templateId`, `legalCaseId` và object `data` vừa thu thập).
+3. **Xử lý Thành công:** API trả về `201 Created` kèm theo object hợp đồng, bao gồm đường link tải file DOCX và PDF. FE có thể chuyển hướng sang trang "Chi tiết hợp đồng" hoặc hiển thị nút tải file ngay trên màn hình.
 
-### Bước 3: Tạo và lưu hợp đồng (Finalize)
-
-**Mục đích:** Người dùng đã hài lòng với bản Preview và bấm "Tạo hợp đồng". Hệ thống sẽ merge dữ liệu, sinh file DOCX, sinh file PDF, và lưu vào CSDL.
-
-1. **Gọi API:** `POST /api/v1/contracts` với payload y hệt như lúc gọi Preview (thêm trường `legalCaseId` nếu hợp đồng thuộc về một Vụ việc cụ thể).
-2. **Xử lý Thành công:** API trả về `201 Created` kèm theo object hợp đồng, bao gồm đường link tải file DOCX và PDF. FE có thể chuyển hướng sang trang "Chi tiết hợp đồng" hoặc "Danh sách hợp đồng".
-
-### Bước 4: Xem và Tải file (Download)
+### Bước 3: Xem và Tải file (Download)
 
 1. Ở màn hình chi tiết, FE hiển thị nút "Tải bản Word" và "Tải bản PDF".
 2. Khi người dùng click, FE sẽ điều hướng trình duyệt hoặc gọi API:
@@ -51,45 +55,7 @@ Luồng nghiệp vụ được thiết kế gồm 4 bước chính: **Lấy cấ
 
 > **Lưu ý chung:** Tất cả các API yêu cầu Header `Authorization: Bearer <token>`.
 
-### 2.1. API Xem trước Hợp đồng (Preview)
 
-Nhận dữ liệu nhập từ form, merge vào file template DOCX và trả ra định dạng HTML để FE nhúng vào màn hình.
-
-- **URL:** `/api/v1/contracts/preview`
-- **Method:** `POST`
-- **Permissions:** Cần quyền `contract.create`
-
-**Request Body:**
-```json
-{
-  "templateId": 1,
-  "data": {
-    "contract_no": "HD-2026-0001",
-    "contract_date": "2026-02-22",
-    "party_a_name": "Công ty TNHH Phần mềm AAA",
-    "party_a_representative": "Nguyễn Văn A",
-    "party_b_name": "Công ty Cổ phần Xây dựng BBB",
-    "amount": "50,000,000"
-  }
-}
-```
-
-**Response - Thành công (200 OK):**
-```json
-{
-  "status": 200,
-  "message": "Thành công",
-  "data": {
-    "renderedHtml": "<html><body>...<p>Số: HD-2026-0001</p>...</body></html>"
-  }
-}
-```
-
-**Các lỗi thường gặp:**
-- `400 Bad Request`: Thiếu `templateId` hoặc truyền thiếu các field `required` (Lỗi validation).
-- `404 Not Found`: Không tìm thấy `templateId` trong hệ thống.
-
----
 
 ### 2.2. API Tạo Hợp đồng (Create)
 

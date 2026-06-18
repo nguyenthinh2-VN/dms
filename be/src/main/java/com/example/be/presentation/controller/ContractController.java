@@ -21,16 +21,6 @@ public class ContractController {
         this.contractUseCase = contractUseCase;
     }
 
-    @PostMapping("/preview")
-    public ResponseEntity<?> preview(@Valid @RequestBody PreviewContractRequest request,
-                                     Authentication authentication) throws Exception {
-        // Assume CustomUserDetails has getId()
-        // Here we just use a dummy ID or cast to user details
-        Long userId = extractUserId(authentication);
-        ContractUseCase.MapResponse response = contractUseCase.preview(request, userId);
-        return ResponseEntity.ok(new Envelope<>(200, "Thành công", response));
-    }
-
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CreateContractRequest request,
                                     Authentication authentication) throws Exception {
