@@ -297,3 +297,22 @@ API này dùng để gán nhân sự (Luật sư, Partner, TTS,...) vào một v
   ]
 }
 ```
+
+### 8.3 Xóa Phân công
+API này dùng để gỡ bỏ một người khỏi vụ việc ở một vai trò cụ thể. Nó sẽ xóa tên người đó khỏi vị trí hiện tại trong vụ việc (`LegalCase`), và set % hoa hồng về `0.0`. Lịch sử phân công trong bảng `CaseAssignment` vẫn được giữ nguyên.
+- **URL:** `/api/v1/cases/{id}/assignments/{roleInCase}`
+- **Method:** `DELETE`
+- **Path Variables:**
+  - `id`: ID của vụ việc.
+  - `roleInCase`: Vai trò cần gỡ bỏ (`LAWYER`, `PARTNER`, `INTERN_LAWYER`, `TRAINEE`).
+- **Quyền yêu cầu:** Người gọi phải là `ADMIN`, `PARTNER`, hoặc `Người tạo vụ việc / Luật sư đang được gán`.
+- **Response (200 OK):**
+```json
+{
+  "status": 200,
+  "message": "Xóa phân công thành công"
+}
+```
+- **Lỗi có thể trả về:**
+  - `400 Bad Request`: Vai trò không hợp lệ.
+  - `403 Forbidden`: `{"status": 403, "message": "Không có quyền truy cập"}`

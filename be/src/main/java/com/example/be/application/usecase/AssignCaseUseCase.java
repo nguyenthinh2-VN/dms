@@ -116,6 +116,44 @@ public class AssignCaseUseCase {
                 .build();
     }
 
+    @Transactional
+    public void removeAssignmentFromCase(Long caseId, String roleInCase, User currentUser) {
+        LegalCase legalCase = legalCaseRepository.findById(caseId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy vụ việc."));
+
+        String roleName = currentUser.getRole() != null ? currentUser.getRole().getCode() : "";
+        boolean isAdmin = roleName.equals("ADMIN");
+        boolean isPartner = roleName.equals("PARTNER");
+        boolean isCreatorOrAssigned = legalCase.getAssignedLawyer() != null && legalCase.getAssignedLawyer().getId().equals(currentUser.getId());
+
+        if (!isAdmin && !isPartner && !isCreatorOrAssigned) {
+            throw new RuntimeException("403_FORBIDDEN: Bạn không có quyền xóa phân công vụ việc này.");
+        }
+
+        switch (roleInCase) {
+            case "LAWYER":
+                legalCase.setAssignedLawyer(null);
+                legalCase.setAssignedLawyerPercent(0.0);
+                break;
+            case "PARTNER":
+                legalCase.setPartner(null);
+                legalCase.setPartnerPercent(0.0);
+                break;
+            case "INTERN_LAWYER":
+                legalCase.setInternLawyer(null);
+                legalCase.setInternPercent(0.0);
+                break;
+            case "TRAINEE":
+                legalCase.setTrainee(null);
+                legalCase.setTraineePercent(0.0);
+                break;
+            default:
+                throw new RuntimeException("Vai trò không hợp lệ: " + roleInCase);
+        }
+
+        legalCaseRepository.save(legalCase);
+    }
+
     private StaffUserDto toStaffDto(User user) {
         if (user == null) return null;
         return new StaffUserDto(user.getId(), user.getFullName());

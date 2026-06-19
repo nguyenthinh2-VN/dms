@@ -1,67 +1,59 @@
 package com.example.be.presentation.controller;
 
-import com.example.be.application.dto.CaseAssignmentRequest;
-import com.example.be.application.dto.CaseAssignmentResponse;
-import com.example.be.application.usecase.AssignCaseUseCase;
+import com.example.be.application.dto.ReminderRequest;
+import com.example.be.application.dto.ReminderResponse;
+import com.example.be.application.usecase.ReminderUseCase;
 import com.example.be.application.util.MessageUtils;
 import com.example.be.domain.entity.User;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/cases/{id}/assignments")
-public class CaseAssignmentController {
+@RequestMapping("/api/v1/reminders")
+public class ReminderController {
 
-    private final AssignCaseUseCase assignCaseUseCase;
+    private final ReminderUseCase reminderUseCase;
 
-    public CaseAssignmentController(AssignCaseUseCase assignCaseUseCase) {
-        this.assignCaseUseCase = assignCaseUseCase;
+    public ReminderController(ReminderUseCase reminderUseCase) {
+        this.reminderUseCase = reminderUseCase;
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> assignUsersToCase(
-            @PathVariable Long id,
-            @RequestBody @Valid List<CaseAssignmentRequest> requests,
+    public ResponseEntity<Map<String, Object>> createReminder(
+            @RequestBody @Valid ReminderRequest request,
             Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
         try {
-            List<CaseAssignmentResponse> responses = assignCaseUseCase.assignUsersToCase(id, requests, currentUser);
+            ReminderResponse responseData = reminderUseCase.createReminder(request, currentUser);
             Map<String, Object> response = new HashMap<>();
             response.put("status", 200);
-            response.put("message", MessageUtils.getMessage("SUCCESS", "Phân công thành công"));
-            response.put("data", responses);
+            response.put("message", MessageUtils.getMessage("SUCCESS", "Tạo nhắc hạn thành công"));
+            response.put("data", responseData);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> error = new HashMap<>();
             error.put("status", 400);
             error.put("message", MessageUtils.getMessage("UNKNOWN", e.getMessage()));
-            if (e.getMessage() != null && e.getMessage().contains("403_FORBIDDEN")) {
-                error.put("status", 403);
-                error.put("message", MessageUtils.getMessage("FORBIDDEN", "Không có quyền truy cập"));
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
-            }
             return ResponseEntity.badRequest().body(error);
         }
     }
 
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> getAssignments(
-            @PathVariable Long id,
-            Authentication authentication) {
+    @GetMapping("/upcoming")
+    public ResponseEntity<Map<String, Object>> getUpcomingReminders(Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
         try {
-            List<CaseAssignmentResponse> responses = assignCaseUseCase.getAssignments(id, currentUser);
+            List<ReminderResponse> responseData = reminderUseCase.getUpcomingReminders(currentUser);
             Map<String, Object> response = new HashMap<>();
             response.put("status", 200);
             response.put("message", MessageUtils.getMessage("SUCCESS", "Thành công"));
-            response.put("data", responses);
+            response.put("data", responseData);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> error = new HashMap<>();
@@ -71,17 +63,16 @@ public class CaseAssignmentController {
         }
     }
 
-    @DeleteMapping("/{roleInCase}")
-    public ResponseEntity<Map<String, Object>> removeAssignmentFromCase(
+    @PutMapping("/{id}/complete")
+    public ResponseEntity<Map<String, Object>> completeReminder(
             @PathVariable Long id,
-            @PathVariable String roleInCase,
             Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
         try {
-            assignCaseUseCase.removeAssignmentFromCase(id, roleInCase, currentUser);
+            reminderUseCase.completeReminder(id, currentUser);
             Map<String, Object> response = new HashMap<>();
             response.put("status", 200);
-            response.put("message", MessageUtils.getMessage("SUCCESS", "Xóa phân công thành công"));
+            response.put("message", MessageUtils.getMessage("SUCCESS", "Đánh dấu hoàn thành nhắc hạn thành công"));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> error = new HashMap<>();
