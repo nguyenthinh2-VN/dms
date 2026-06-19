@@ -144,6 +144,10 @@ public class UserUseCase {
         User user = userRepository.findById(currentUser.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + currentUser.getId()));
 
+        if (request.getFullName() != null && !request.getFullName().isBlank()) user.setFullName(request.getFullName());
+        if (request.getPhoneNumber() != null) user.setPhoneNumber(request.getPhoneNumber());
+        if (request.getPassword() != null && !request.getPassword().isBlank()) user.setPassword(passwordEncoder.encode(request.getPassword()));
+
         if (request.getRankLevel() != null) user.setRankLevel(request.getRankLevel());
         if (request.getSpecialty() != null) user.setSpecialty(request.getSpecialty());
         if (request.getYearsOfExperience() != null) user.setYearsOfExperience(request.getYearsOfExperience());

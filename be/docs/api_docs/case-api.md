@@ -210,3 +210,90 @@
 
 **Lỗi có thể trả về:**
 - `403 Forbidden`: `{"status": 403, "message": "Bạn không có quyền truy cập"}`
+
+---
+
+## 8. Phân công Vụ việc (Case Assignment)
+
+API này dùng để gán nhân sự (Luật sư, Partner, TTS,...) vào một vụ việc cụ thể, có thể kèm theo **% hoa hồng** và **ghi chú công việc**.
+
+> [!TIP]
+> **Luồng tích hợp FE (Frontend Integration Flow):**
+> 
+> BƯỚC 1: Lấy danh sách nhân sự để làm UI Chọn người:
+> - Gọi API: `GET /api/v1/users/staff` (Mục 1)
+> - Data trả về là danh sách nhân sự được nhóm theo Role (VD: `LAWYER`, `PARTNER`, `INTERN_LAWYER`, `TRAINEE`).
+> - FE dùng danh sách này để render dropdown/select để người dùng chọn tên.
+> 
+> BƯỚC 2: Người dùng nhập Ghi chú (Tuỳ chọn) và % Hoa hồng (Bắt buộc nếu đã chọn người).
+> 
+> BƯỚC 3: Nhấn nút [Lưu phân công].
+> - FE gom dữ liệu thành 1 Mảng (List) và đẩy lên API `POST /api/v1/cases/{id}/assignments`. Mảng này có thể rỗng `[]` nếu không phân công ai, hoặc chứa 1-2 object nếu phân công 1-2 người.
+> - Hệ thống sẽ tự động đồng bộ % Hoa hồng vào Vụ việc gốc (`LegalCase`) và lưu vết lịch sử vào bảng `CaseAssignment`.
+
+### 8.1 Tạo Phân công mới (Assign Users)
+- **URL:** `/api/v1/cases/{id}/assignments`
+- **Method:** `POST`
+- **Quyền yêu cầu:** Người gọi phải là `ADMIN`, `PARTNER`, hoặc `Người tạo vụ việc / Luật sư đang được gán`.
+- **Request Body (JSON Array):**
+```json
+[
+  {
+    "assigneeId": 10,
+    "roleInCase": "PARTNER", 
+    "commissionPercent": 15.0,
+    "note": "Anh lo giúp em mảng hợp đồng dân sự nhé."
+  },
+  {
+    "assigneeId": 25,
+    "roleInCase": "INTERN_LAWYER", 
+    "commissionPercent": 5.0,
+    "note": ""
+  }
+]
+```
+> **Lưu ý:** 
+> - Request body có thể là mảng rỗng `[]` nếu không muốn gán cho ai.
+> - `roleInCase` chỉ nhận 4 giá trị hợp lệ: `LAWYER`, `PARTNER`, `INTERN_LAWYER`, `TRAINEE`.
+> - `commissionPercent` là **BẮT BUỘC** điền nếu đã chọn người.
+> - `note` là tuỳ chọn.
+
+- **Response (200 OK):**
+```json
+{
+  "status": 200,
+  "message": "Phân công thành công",
+  "data": [
+    {
+      "id": 1,
+      "legalCaseId": 5,
+      "assignee": {
+        "id": 10,
+        "fullName": "Nguyen Van Partner"
+      },
+      "assigner": {
+        "id": 1,
+        "fullName": "Admin"
+      },
+      "roleInCase": "PARTNER",
+      "note": "Anh lo giúp em mảng hợp đồng dân sự nhé.",
+      "commissionPercent": 15.0,
+      "createdAt": "2026-06-19T10:00:00Z"
+    }
+  ]
+}
+```
+
+### 8.2 Xem Lịch sử Phân công
+- **URL:** `/api/v1/cases/{id}/assignments`
+- **Method:** `GET`
+- **Response (200 OK):** Trả về danh sách Lịch sử phân công (để FE có thể render timeline ai đã gán ai, note là gì).
+```json
+{
+  "status": 200,
+  "message": "Thành công",
+  "data": [
+     // Mảng danh sách phân công giống phần data của API POST
+  ]
+}
+```

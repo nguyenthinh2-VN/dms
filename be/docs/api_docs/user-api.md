@@ -119,11 +119,15 @@ Lấy danh sách các quyền (Permission) có sẵn trong hệ thống.
 - **Request Body:**
 ```json
 {
+  "fullName": "Nguyen Van C",
+  "phoneNumber": "0987654321",
+  "password": "newSecurePassword",
   "rankLevel": "Senior",
   "specialty": "Luật Dân Sự",
   "yearsOfExperience": 5
 }
 ```
+> **Lưu ý:** Các trường đều không bắt buộc, người dùng chỉ cần gửi những trường nào muốn thay đổi. `position` và `role` không được phép đổi qua API này.
 
 ## 7. Khóa / Mở khóa tài khoản
 
