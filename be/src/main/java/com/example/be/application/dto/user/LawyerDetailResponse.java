@@ -1,16 +1,12 @@
 package com.example.be.application.dto.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserResponse {
+public class LawyerDetailResponse {
     private Long id;
     private String fullName;
     private String workEmail;
@@ -19,10 +15,8 @@ public class UserResponse {
     private String status;
     private String roleCode;
     private String roleName;
-    
     private String rankLevel;
     private String specialty;
     private Integer yearsOfExperience;
-
     private OffsetDateTime createdAt;
 }

@@ -66,6 +66,9 @@ Lấy danh sách các quyền (Permission) có sẵn trong hệ thống.
       "status": "ACTIVE",
       "roleCode": "ADMIN",
       "roleName": "Admin",
+      "rankLevel": "Senior",
+      "specialty": "Luật Doanh Nghiệp",
+      "yearsOfExperience": 5,
       "createdAt": "2024-01-01T10:00:00Z"
     }
   ],
@@ -87,12 +90,13 @@ Lấy danh sách các quyền (Permission) có sẵn trong hệ thống.
   "workEmail": "b@abc.com",
   "phoneNumber": "0987654321",
   "position": "Thực tập sinh",
-  "roleCode": "INTERN_LAWYER"
+  "roleCode": "INTERN_LAWYER",
+  "password": "mySecurePassword"
 }
 ```
-*Lưu ý:* Mật khẩu mặc định khi tạo mới là `123456`. Status mặc định là `ACTIVE`.
+*Lưu ý:* Có thể truyền thêm `password` để thiết lập mật khẩu trực tiếp. Nếu không truyền, mật khẩu mặc định khi tạo mới là `123456`. Status mặc định là `ACTIVE`.
 
-## 5. Cập nhật thông tin User
+## 5. Cập nhật thông tin User (Dành cho Admin)
 
 - **URL:** `/api/v1/users/{id}`
 - **Method:** `PUT`
@@ -107,7 +111,21 @@ Lấy danh sách các quyền (Permission) có sẵn trong hệ thống.
 }
 ```
 
-## 6. Khóa / Mở khóa tài khoản
+## 6. Cập nhật thông tin cá nhân (Dành cho Account đang đăng nhập)
+
+- **URL:** `/api/v1/users/me`
+- **Method:** `PUT`
+- **Quyền yêu cầu:** Không yêu cầu quyền riêng (chỉ cần đăng nhập hợp lệ).
+- **Request Body:**
+```json
+{
+  "rankLevel": "Senior",
+  "specialty": "Luật Dân Sự",
+  "yearsOfExperience": 5
+}
+```
+
+## 7. Khóa / Mở khóa tài khoản
 
 - **URL:** `/api/v1/users/{id}/status`
 - **Method:** `PATCH`
@@ -119,7 +137,78 @@ Lấy danh sách các quyền (Permission) có sẵn trong hệ thống.
 }
 ```
 
-## 7. Xem danh sách Quyền của 1 User
+## 8. Danh bạ luật sư (Lawyer Directory)
+
+Danh bạ luật sư cho phép tất cả các người dùng đã đăng nhập có thể xem thông tin.
+
+### 8.1 Xem danh sách luật sư (và Tìm kiếm/Lọc)
+- **URL:** `/api/v1/directory/lawyers`
+- **Method:** `GET`
+- **Quyền yêu cầu:** Bất kỳ ai đã đăng nhập đều xem được (Không cần quyền Admin).
+
+**Cách sử dụng (Gửi dữ liệu lên URL):**
+Để tìm kiếm hoặc lọc, bạn gắn thêm các từ khóa vào sau dấu `?` trên đường dẫn URL. Bạn có thể truyền 1 hoặc nhiều điều kiện cùng lúc. Nếu không truyền gì, API sẽ trả về toàn bộ danh sách.
+
+*Các tiêu chí có thể dùng:*
+- `keyword`: Tìm từ khóa tự do (Hệ thống sẽ tự động tìm trùng khớp với Tên, Số điện thoại hoặc Email).
+- `rankLevel`: Lọc chính xác theo Cấp bậc.
+- `specialty`: Lọc chính xác theo Chuyên môn.
+- `yearsOfExperience`: Lọc chính xác theo Số năm kinh nghiệm (điền số).
+- `page`: Trang số mấy (đếm từ 0).
+- `size`: Lấy bao nhiêu người trên 1 trang (mặc định 10).
+
+*Ví dụ thực tế:*
+- **Lấy tất cả luật sư (Trang 1, mỗi trang 10 người):** 
+  `GET /api/v1/directory/lawyers`
+- **Tìm các luật sư tên là "Nguyen" (Trang 1):** 
+  `GET /api/v1/directory/lawyers?keyword=Nguyen`
+- **Lọc các luật sư có chuyên môn "Dân sự" và Cấp bậc "Senior":**
+  `GET /api/v1/directory/lawyers?specialty=Dân sự&rankLevel=Senior`
+- **Tìm "Nguyen", chuyên môn "Dân sự", lấy trang số 2 (mỗi trang 5 người):**
+  `GET /api/v1/directory/lawyers?keyword=Nguyen&specialty=Dân sự&page=1&size=5`
+
+- **Response:**
+```json
+{
+  "content": [
+    {
+      "id": 2,
+      "fullName": "Nguyen Van B",
+      "rankLevel": "Senior",
+      "specialty": "Luật Doanh Nghiệp",
+      "yearsOfExperience": 5
+    }
+  ],
+  "pageable": { ... },
+  "totalElements": 1,
+  "totalPages": 1,
+  ...
+}
+```
+
+### 8.2 Xem chi tiết 1 luật sư
+- **URL:** `/api/v1/directory/lawyers/{id}`
+- **Method:** `GET`
+- **Quyền yêu cầu:** Không yêu cầu quyền riêng (chỉ cần đăng nhập hợp lệ).
+- **Response:** Trả về tất cả thông tin chi tiết của luật sư (trừ password).
+```json
+{
+  "id": 2,
+  "fullName": "Nguyen Van B",
+  "workEmail": "b@abc.com",
+  "position": "Luật sư chính",
+  "phoneNumber": "0987654321",
+  "status": "ACTIVE",
+  "roleCode": "LAWYER",
+  "roleName": "Luật sư",
+  "rankLevel": "Senior",
+  "specialty": "Luật Doanh Nghiệp",
+  "yearsOfExperience": 5,
+  "createdAt": "2024-01-01T10:00:00Z"
+}
+```
+
+## 9. Xem danh sách Quyền của 1 User
 Dùng để render giao diện checklist phân quyền, trả về toàn bộ Quyền trong hệ thống, quyền nào User đang có thì `isGranted = true`.
 
 - **URL:** `/api/v1/users/{id}/permissions`
@@ -153,6 +242,13 @@ API này sẽ xóa tất cả các quyền cũ của User và thiết lập lạ
   "permissionCodes": ["user.list", "user.view"]
 }
 ```
+- **Response:** `200 OK` (Không có body).
+
+## 9. Xóa tài khoản
+
+- **URL:** `/api/v1/users/{id}`
+- **Method:** `DELETE`
+- **Quyền yêu cầu:** `user.delete`
 - **Response:** `200 OK` (Không có body).
 
 ---

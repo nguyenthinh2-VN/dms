@@ -45,6 +45,12 @@ public class UserJpaEntity {
     @JoinColumn(name = "role_id", nullable = false)
     private RoleJpaEntity role;
 
+    private String rankLevel;
+    
+    private String specialty;
+    
+    private Integer yearsOfExperience;
+
     @Builder.Default
     @Column(nullable = false)
     private String status = "ACTIVE";

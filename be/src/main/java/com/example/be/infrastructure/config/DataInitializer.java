@@ -41,8 +41,9 @@ public class DataInitializer implements CommandLineRunner {
     private void initSuperAdmin() {
         RoleJpaEntity superAdminRole = roleRepository.findByCode("SUPER_ADMIN").orElseThrow();
         
-        if (userRepository.findByWorkEmail("admin@dms.com").isEmpty()) {
-            com.example.be.infrastructure.persistence.entity.UserJpaEntity admin = com.example.be.infrastructure.persistence.entity.UserJpaEntity.builder()
+        com.example.be.infrastructure.persistence.entity.UserJpaEntity admin = userRepository.findByWorkEmail("admin@dms.com").orElse(null);
+        if (admin == null) {
+            admin = com.example.be.infrastructure.persistence.entity.UserJpaEntity.builder()
                     .fullName("Super Admin")
                     .workEmail("admin@dms.com")
                     .phoneNumber("0000000000")
@@ -55,9 +56,14 @@ public class DataInitializer implements CommandLineRunner {
             
             admin = userRepository.save(admin);
             System.out.println("Inserted default SUPER_ADMIN user: admin@dms.com");
+        }
 
-            List<PermissionJpaEntity> allPermissions = permissionRepository.findAll();
-            for (PermissionJpaEntity permission : allPermissions) {
+        List<com.example.be.infrastructure.persistence.entity.RuleJpaEntity> existingRules = ruleRepository.findByUserId(admin.getId());
+        List<PermissionJpaEntity> allPermissions = permissionRepository.findAll();
+        for (PermissionJpaEntity permission : allPermissions) {
+            boolean hasRule = existingRules.stream()
+                    .anyMatch(r -> r.getPermissionId().equals(permission.getId()));
+            if (!hasRule) {
                 com.example.be.infrastructure.persistence.entity.RuleJpaEntity rule = com.example.be.infrastructure.persistence.entity.RuleJpaEntity.builder()
                         .userId(admin.getId())
                         .permissionId(permission.getId())
@@ -65,8 +71,8 @@ public class DataInitializer implements CommandLineRunner {
                         .build();
                 ruleRepository.save(rule);
             }
-            System.out.println("Granted all permissions to SUPER_ADMIN.");
         }
+        System.out.println("Ensured all permissions granted to SUPER_ADMIN.");
     }
 
     private void initRoles() {
@@ -110,7 +116,8 @@ public class DataInitializer implements CommandLineRunner {
                 new PermissionData("user.update", "Cập nhật tài khoản"),
                 new PermissionData("user.view", "Xem chi tiết tài khoản"),
                 new PermissionData("user.list", "Xem danh sách tài khoản"),
-                new PermissionData("user.update_status", "Khóa / mở khóa tài khoản")
+                new PermissionData("user.update_status", "Khóa / mở khóa tài khoản"),
+                new PermissionData("user.delete", "Xóa tài khoản")
         );
 
         for (PermissionData data : permissions) {

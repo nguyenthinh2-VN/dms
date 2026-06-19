@@ -79,12 +79,14 @@ public class UserUseCase {
         Role role = roleRepository.findByCode(request.getRoleCode())
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + request.getRoleCode()));
 
+        String rawPassword = (request.getPassword() != null && !request.getPassword().trim().isEmpty()) ? request.getPassword() : "123456";
+
         User user = User.builder()
                 .fullName(request.getFullName())
                 .workEmail(request.getWorkEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .position(request.getPosition())
-                .password(passwordEncoder.encode("123456"))
+                .password(passwordEncoder.encode(rawPassword))
                 .role(role)
                 .status("ACTIVE")
                 .personalReferralCode("REF-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
@@ -123,6 +125,29 @@ public class UserUseCase {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         user.setStatus(request.getStatus().toUpperCase());
+        return mapToResponse(userRepository.save(user));
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        permissionChecker.requirePermission(getCurrentUser(), "user.delete");
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        
+        ruleRepository.deleteByUserId(id);
+        userRepository.deleteById(id);
+    }
+
+    @Transactional
+    public UserResponse updateMyProfile(UpdateMyProfileRequest request) {
+        User currentUser = getCurrentUser();
+        User user = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + currentUser.getId()));
+
+        if (request.getRankLevel() != null) user.setRankLevel(request.getRankLevel());
+        if (request.getSpecialty() != null) user.setSpecialty(request.getSpecialty());
+        if (request.getYearsOfExperience() != null) user.setYearsOfExperience(request.getYearsOfExperience());
+
         return mapToResponse(userRepository.save(user));
     }
 
@@ -198,6 +223,9 @@ public class UserUseCase {
                 .status(user.getStatus())
                 .roleCode(user.getRole() != null ? user.getRole().getCode() : null)
                 .roleName(user.getRole() != null ? user.getRole().getName() : null)
+                .rankLevel(user.getRankLevel())
+                .specialty(user.getSpecialty())
+                .yearsOfExperience(user.getYearsOfExperience())
                 .createdAt(user.getCreatedAt())
                 .build();
     }

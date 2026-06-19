@@ -22,4 +22,6 @@ public class CreateUserRequest {
 
     @NotBlank(message = "Mã vai trò (Role code) không được để trống")
     private String roleCode;
+
+    private String password;
 }

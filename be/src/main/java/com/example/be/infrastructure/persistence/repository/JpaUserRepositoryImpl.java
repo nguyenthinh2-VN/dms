@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Component
 public class JpaUserRepositoryImpl implements UserRepository {
@@ -75,10 +77,50 @@ public class JpaUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public org.springframework.data.domain.Page<User> findAll(org.springframework.data.domain.Pageable pageable) {
+    public Page<User> findAll(Pageable pageable) {
         return springDataUserRepository.findAll(pageable)
                 .map(this::toDomainEntity);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        springDataUserRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<User> searchLawyers(String keyword, String rankLevel, String specialty, Integer yearsOfExperience, Pageable pageable) {
+        org.springframework.data.jpa.domain.Specification<UserJpaEntity> spec = (root, query, cb) -> {
+            java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+            
+            // Filter out SUPER_ADMIN and ADMIN
+            jakarta.persistence.criteria.Join<Object, Object> roleJoin = root.join("role");
+            predicates.add(cb.notEqual(roleJoin.get("code"), "SUPER_ADMIN"));
+            predicates.add(cb.notEqual(roleJoin.get("code"), "ADMIN"));
+            
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String likeKeyword = "%" + keyword.trim().toLowerCase() + "%";
+                predicates.add(cb.or(
+                    cb.like(cb.lower(root.get("fullName")), likeKeyword),
+                    cb.like(cb.lower(root.get("workEmail")), likeKeyword),
+                    cb.like(cb.lower(root.get("phoneNumber")), likeKeyword)
+                ));
+            }
+            if (rankLevel != null && !rankLevel.trim().isEmpty()) {
+                predicates.add(cb.equal(root.get("rankLevel"), rankLevel.trim()));
+            }
+            if (specialty != null && !specialty.trim().isEmpty()) {
+                predicates.add(cb.equal(root.get("specialty"), specialty.trim()));
+            }
+            if (yearsOfExperience != null) {
+                predicates.add(cb.equal(root.get("yearsOfExperience"), yearsOfExperience));
+            }
+            
+            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        };
+        
+        return springDataUserRepository.findAll(spec, pageable).map(this::toDomainEntity);
+    }
+
 
     private UserJpaEntity toJpaEntity(User user) {
         RoleJpaEntity roleJpa = null;
@@ -104,6 +146,9 @@ public class JpaUserRepositoryImpl implements UserRepository {
                 .invitedByCode(user.getInvitedByCode())
                 .personalReferralCode(user.getPersonalReferralCode())
                 .role(roleJpa)
+                .rankLevel(user.getRankLevel())
+                .specialty(user.getSpecialty())
+                .yearsOfExperience(user.getYearsOfExperience())
                 .status(user.getStatus() != null ? user.getStatus() : "ACTIVE")
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
@@ -134,6 +179,9 @@ public class JpaUserRepositoryImpl implements UserRepository {
                 .invitedByCode(entity.getInvitedByCode())
                 .personalReferralCode(entity.getPersonalReferralCode())
                 .role(role)
+                .rankLevel(entity.getRankLevel())
+                .specialty(entity.getSpecialty())
+                .yearsOfExperience(entity.getYearsOfExperience())
                 .status(entity.getStatus())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())

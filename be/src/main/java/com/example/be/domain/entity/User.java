@@ -22,6 +22,10 @@ public class User {
     private String personalReferralCode;
     private Role role;
 
+    private String rankLevel;
+    private String specialty;
+    private Integer yearsOfExperience;
+
     @Builder.Default
     private String status = "ACTIVE";
     private OffsetDateTime createdAt;

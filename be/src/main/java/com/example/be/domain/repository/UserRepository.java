@@ -18,4 +18,8 @@ public interface UserRepository {
     List<User> findByInvitedByCode(String invitedByCode);
     List<User> findAll();
     Page<User> findAll(Pageable pageable);
+    
+    Page<User> searchLawyers(String keyword, String rankLevel, String specialty, Integer yearsOfExperience, Pageable pageable);
+    
+    void deleteById(Long id);
 }

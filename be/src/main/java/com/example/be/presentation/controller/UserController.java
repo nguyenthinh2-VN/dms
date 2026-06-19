@@ -42,6 +42,12 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @org.springframework.web.bind.annotation.PutMapping("/me")
+    public ResponseEntity<com.example.be.application.dto.user.UserResponse> updateMyProfile(
+            @jakarta.validation.Valid @org.springframework.web.bind.annotation.RequestBody com.example.be.application.dto.user.UpdateMyProfileRequest request) {
+        return ResponseEntity.ok(userUseCase.updateMyProfile(request));
+    }
+
     @GetMapping("/staff")
     public ResponseEntity<Map<String, Object>> getStaff() {
         Map<String, Object> response = new HashMap<>();
@@ -87,6 +93,12 @@ public class UserController {
             @org.springframework.web.bind.annotation.PathVariable Long id,
             @jakarta.validation.Valid @org.springframework.web.bind.annotation.RequestBody com.example.be.application.dto.user.UserStatusUpdateRequest request) {
         return ResponseEntity.ok(userUseCase.updateStatus(id, request));
+    }
+
+    @org.springframework.web.bind.annotation.DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@org.springframework.web.bind.annotation.PathVariable Long id) {
+        userUseCase.deleteUser(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/roles")

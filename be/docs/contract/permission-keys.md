@@ -53,6 +53,17 @@ Hoặc khi cần phân scope:
 | `case.list.own` | Danh sách vụ việc liên quan tới mình (assignedLawyer/partner/intern/trainee). |
 | `case.list.all` | Toàn bộ danh sách vụ việc. |
 
+### 2.4. User (Quản lý người dùng)
+
+| Code | Mô tả |
+|---|---|
+| `user.create` | Tạo tài khoản mới. |
+| `user.view` | Xem chi tiết tài khoản. |
+| `user.list` | Xem danh sách tài khoản. |
+| `user.update` | Cập nhật tài khoản. |
+| `user.update_status` | Khóa / mở khóa tài khoản. |
+| `user.delete` | Xóa tài khoản. |
+
 ---
 
 ## 3. Pipeline kiểm tra quyền
