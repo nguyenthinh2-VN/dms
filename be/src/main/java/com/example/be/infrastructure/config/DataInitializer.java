@@ -18,24 +18,40 @@ public class DataInitializer implements CommandLineRunner {
     private final com.example.be.infrastructure.persistence.repository.SpringDataUserRepository userRepository;
     private final com.example.be.infrastructure.persistence.repository.SpringDataRuleRepository ruleRepository;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+    private final org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
     public DataInitializer(SpringDataRoleRepository roleRepository, 
                            SpringDataPermissionRepository permissionRepository,
                            com.example.be.infrastructure.persistence.repository.SpringDataUserRepository userRepository,
                            com.example.be.infrastructure.persistence.repository.SpringDataRuleRepository ruleRepository,
-                           org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
+                           org.springframework.security.crypto.password.PasswordEncoder passwordEncoder,
+                           org.springframework.jdbc.core.JdbcTemplate jdbcTemplate) {
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
         this.userRepository = userRepository;
         this.ruleRepository = ruleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public void run(String... args) {
+        fixDatabaseSchema();
         initRoles();
         seedPermissions();
         initSuperAdmin();
+    }
+
+    private void fixDatabaseSchema() {
+        try {
+            jdbcTemplate.execute("ALTER TABLE legal_cases MODIFY COLUMN assigned_lawyer_id BIGINT NULL");
+            jdbcTemplate.execute("ALTER TABLE legal_cases MODIFY COLUMN partner_id BIGINT NULL");
+            jdbcTemplate.execute("ALTER TABLE legal_cases MODIFY COLUMN intern_lawyer_id BIGINT NULL");
+            jdbcTemplate.execute("ALTER TABLE legal_cases MODIFY COLUMN trainee_id BIGINT NULL");
+            System.out.println("Database schema fixed: made assignment columns NULLABLE.");
+        } catch (Exception e) {
+            System.err.println("Could not alter table: " + e.getMessage());
+        }
     }
 
     private void initSuperAdmin() {

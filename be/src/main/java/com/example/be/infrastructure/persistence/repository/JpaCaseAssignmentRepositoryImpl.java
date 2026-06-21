@@ -42,6 +42,18 @@ public class JpaCaseAssignmentRepositoryImpl implements CaseAssignmentRepository
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<CaseAssignment> findByCaseIdAndAssigneeId(Long caseId, Long assigneeId) {
+        return springDataRepository.findByLegalCase_IdAndAssignee_Id(caseId, assigneeId).stream()
+                .map(this::toDomainEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(CaseAssignment assignment) {
+        springDataRepository.deleteById(assignment.getId());
+    }
+
     private CaseAssignmentJpaEntity toJpaEntity(CaseAssignment domain) {
         if (domain == null) return null;
 

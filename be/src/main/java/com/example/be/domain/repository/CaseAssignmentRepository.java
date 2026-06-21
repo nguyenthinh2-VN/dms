@@ -7,4 +7,6 @@ public interface CaseAssignmentRepository {
     CaseAssignment save(CaseAssignment assignment);
     List<CaseAssignment> saveAll(List<CaseAssignment> assignments);
     List<CaseAssignment> findByCaseId(Long caseId);
+    List<CaseAssignment> findByCaseIdAndAssigneeId(Long caseId, Long assigneeId);
+    void delete(CaseAssignment assignment);
 }

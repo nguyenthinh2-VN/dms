@@ -33,7 +33,7 @@ public class CaseUseCase {
 
     public CaseResponse createCase(CreateCaseRequest request, User currentUser) {
         String roleName = currentUser.getRole() != null ? currentUser.getRole().getCode() : "";
-        if (!roleName.equals("ADMIN") && !roleName.equals("LAWYER") && !roleName.equals("INTERN_LAWYER")) {
+        if (!roleName.equals("ADMIN") && !roleName.equals("SUPER_ADMIN") && !roleName.equals("LAWYER") && !roleName.equals("PARTNER")) {
             throw new RuntimeException("403_FORBIDDEN: Bạn không có quyền tạo vụ việc.");
         }
 
@@ -74,7 +74,7 @@ public class CaseUseCase {
         String roleName = currentUser.getRole() != null ? currentUser.getRole().getCode() : "";
         List<LegalCase> cases;
 
-        if (roleName.equals("ADMIN") || roleName.equals("MANAGER_LAWYER")) {
+        if (roleName.equals("ADMIN") || roleName.equals("SUPER_ADMIN") || roleName.equals("MANAGER_LAWYER")) {
             cases = legalCaseRepository.findAll();
         } else {
             cases = legalCaseRepository.findByRelatedUserId(currentUser.getId());
@@ -99,7 +99,7 @@ public class CaseUseCase {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy vụ việc."));
 
         String roleName = currentUser.getRole() != null ? currentUser.getRole().getCode() : "";
-        boolean isAdmin = roleName.equals("ADMIN");
+        boolean isAdmin = roleName.equals("ADMIN") || roleName.equals("SUPER_ADMIN");
         boolean isCreator = legalCase.getAssignedLawyer() != null && legalCase.getAssignedLawyer().getId().equals(currentUser.getId());
 
         if (!isAdmin && !isCreator) {
@@ -146,7 +146,7 @@ public class CaseUseCase {
 
     private boolean hasAccess(LegalCase legalCase, User user) {
         String roleName = user.getRole() != null ? user.getRole().getCode() : "";
-        if (roleName.equals("ADMIN") || roleName.equals("MANAGER_LAWYER")) return true;
+        if (roleName.equals("ADMIN") || roleName.equals("SUPER_ADMIN") || roleName.equals("MANAGER_LAWYER")) return true;
 
         Long userId = user.getId();
         if (legalCase.getAssignedLawyer() != null && legalCase.getAssignedLawyer().getId().equals(userId)) return true;

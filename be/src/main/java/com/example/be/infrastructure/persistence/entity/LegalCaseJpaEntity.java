@@ -46,7 +46,7 @@ public class LegalCaseJpaEntity {
     private String referrerName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_lawyer_id", nullable = false)
+    @JoinColumn(name = "assigned_lawyer_id")
     private UserJpaEntity assignedLawyer;
 
     @ManyToOne(fetch = FetchType.LAZY)

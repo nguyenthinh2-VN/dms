@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface SpringDataCaseAssignmentRepository extends JpaRepository<CaseAssignmentJpaEntity, Long> {
     List<CaseAssignmentJpaEntity> findByLegalCase_IdOrderByCreatedAtDesc(Long legalCaseId);
+    List<CaseAssignmentJpaEntity> findByLegalCase_IdAndAssignee_Id(Long legalCaseId, Long assigneeId);
 }

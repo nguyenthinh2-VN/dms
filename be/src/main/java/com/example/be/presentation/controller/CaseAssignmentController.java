@@ -58,6 +58,7 @@ public class CaseAssignmentController {
         User currentUser = (User) authentication.getPrincipal();
         try {
             List<CaseAssignmentResponse> responses = assignCaseUseCase.getAssignments(id, currentUser);
+            System.out.println("DEBUG: Fetched " + responses.size() + " assignments for caseId " + id);
             Map<String, Object> response = new HashMap<>();
             response.put("status", 200);
             response.put("message", MessageUtils.getMessage("SUCCESS", "Thành công"));
@@ -71,14 +72,14 @@ public class CaseAssignmentController {
         }
     }
 
-    @DeleteMapping("/{roleInCase}")
+    @DeleteMapping("/{assigneeId}")
     public ResponseEntity<Map<String, Object>> removeAssignmentFromCase(
             @PathVariable Long id,
-            @PathVariable String roleInCase,
+            @PathVariable Long assigneeId,
             Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
         try {
-            assignCaseUseCase.removeAssignmentFromCase(id, roleInCase, currentUser);
+            assignCaseUseCase.removeAssignmentFromCase(id, assigneeId, currentUser);
             Map<String, Object> response = new HashMap<>();
             response.put("status", 200);
             response.put("message", MessageUtils.getMessage("SUCCESS", "Xóa phân công thành công"));
