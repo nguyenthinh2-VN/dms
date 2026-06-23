@@ -106,7 +106,8 @@
   "traineePercent": 0,
   "partnerName": "Ông C",
   "internLawyerName": "Thực tập sinh D",
-  "traineeName": "Trainee E"
+  "traineeName": "Trainee E",
+  "clientName": "Ông F"
 }
 ```
 
@@ -115,12 +116,12 @@
 - `category` (Lĩnh vực pháp lý): Bắt buộc, gửi mã `code` (VD: `CIVIL`, `OTHER`) lấy từ API `/categories`.
 - `customCategory` (Lĩnh vực pháp lý khác): Text tự do. Nếu `category` là `OTHER` thì FE hiển thị ô này cho người dùng nhập tay. Nếu `category` khác `OTHER`, Frontend có thể truyền `null` hoặc không gửi trường này (Backend sẽ tự động ép thành `null`).
 - `description` (Mô tả): Chi tiết nội dung vụ việc.
-- `referrerName` (Người giới thiệu): Tên của khách hàng hoặc đối tác đã giới thiệu vụ việc này (không bắt buộc, do user tự gõ vào).
+- `referrerName` (Người giới thiệu): Tên của người hoặc đối tác đã giới thiệu vụ việc này (không bắt buộc, text tự do).
+- `clientName` (Khách hàng): Tên của khách hàng (không bắt buộc, text tự do).
 - `caseValue` (Giá trị vụ việc): Tổng số tiền thù lao thu được từ vụ việc (VND).
 - `referrerPercent` (% Người giới thiệu): Tỉ lệ phần trăm hoa hồng trích lại cho Người giới thiệu.
 - `assignedLawyerPercent` (% Người phụ trách): Tỉ lệ phần trăm cho Luật sư phụ trách chính (Người tạo vụ việc).
 - `partnerPercent`, `internPercent`, `traineePercent`: Tỉ lệ phần trăm cho Partner, Luật sư thực tập và Thực tập sinh tương ứng.
-- `partnerId`, `internLawyerId`, `traineeId`: ID của nhân sự được phân công thêm (Lấy từ API danh sách nhân sự).
 
 **Response (200 OK):**
 ```json
@@ -160,9 +161,10 @@
     {
       "id": 1,
       "title": "Tranh chấp đất đai",
-      "status": "NEW"
-      // ...
-    }
+      "status": "NEW",
+      "referrerName": "Ông B",
+      "clientName": "Bà C",
+      "assignedLawyer": {
   ]
 }
 ```

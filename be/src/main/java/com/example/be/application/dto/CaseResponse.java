@@ -22,6 +22,7 @@ public class CaseResponse {
     private String customCategory;
     private String description;
     private String referrerName;
+    private String clientName;
     
     private StaffUserDto assignedLawyer;
     private String partnerName;

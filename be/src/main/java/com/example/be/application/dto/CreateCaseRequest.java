@@ -24,6 +24,7 @@ public class CreateCaseRequest {
 
     private String description;
     private String referrerName;
+    private String clientName;
     
     private String partnerName;
     private String internLawyerName;

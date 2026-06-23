@@ -20,6 +20,7 @@ public class UpdateCaseRequest {
     private String customCategory;
     private String description;
     private String referrerName;
+    private String clientName;
     
     private String partnerName;
     private String internLawyerName;

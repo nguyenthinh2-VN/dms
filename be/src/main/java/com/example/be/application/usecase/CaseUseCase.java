@@ -54,6 +54,7 @@ public class CaseUseCase {
                 .customCategory(customCategory)
                 .description(request.getDescription())
                 .referrerName(request.getReferrerName())
+                .clientName(request.getClientName())
                 .assignedLawyer(currentUser)
                 .createdBy(currentUser.getId())
                 .creatorName(currentUser.getFullName())
@@ -119,6 +120,7 @@ public class CaseUseCase {
         
         legalCase.setDescription(request.getDescription());
         legalCase.setReferrerName(request.getReferrerName());
+        legalCase.setClientName(request.getClientName());
         legalCase.setCaseValue(request.getCaseValue() != null ? request.getCaseValue() : BigDecimal.ZERO);
 
         legalCase.setReferrerPercent(request.getReferrerPercent() != null ? request.getReferrerPercent() : 0.0);
@@ -177,6 +179,7 @@ public class CaseUseCase {
                 .customCategory(legalCase.getCustomCategory())
                 .description(legalCase.getDescription())
                 .referrerName(legalCase.getReferrerName())
+                .clientName(legalCase.getClientName())
                 .assignedLawyer(toStaffDto(legalCase.getAssignedLawyer()))
                 .createdBy(legalCase.getCreatedBy())
                 .creatorName(legalCase.getCreatorName())

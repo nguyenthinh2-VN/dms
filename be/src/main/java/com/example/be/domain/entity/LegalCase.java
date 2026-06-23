@@ -27,6 +27,7 @@ public class LegalCase {
 
     private String description;
     private String referrerName;
+    private String clientName;
     
     private User assignedLawyer;
     private String partnerName;
