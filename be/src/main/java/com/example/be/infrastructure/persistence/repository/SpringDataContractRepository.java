@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface SpringDataContractRepository extends JpaRepository<ContractJpaEntity, Long> {
     boolean existsByContractNo(String contractNo);
+
+    Long countByCreatedBy(Long createdBy);
 }

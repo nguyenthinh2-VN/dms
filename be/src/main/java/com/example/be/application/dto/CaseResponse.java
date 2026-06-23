@@ -24,9 +24,9 @@ public class CaseResponse {
     private String referrerName;
     
     private StaffUserDto assignedLawyer;
-    private StaffUserDto partner;
-    private StaffUserDto internLawyer;
-    private StaffUserDto trainee;
+    private String partnerName;
+    private String internLawyerName;
+    private String traineeName;
     
     private BigDecimal caseValue;
     private PaymentStatus paymentStatus;

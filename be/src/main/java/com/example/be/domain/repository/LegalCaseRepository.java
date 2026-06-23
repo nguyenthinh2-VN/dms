@@ -9,4 +9,9 @@ public interface LegalCaseRepository {
     Optional<LegalCase> findById(Long id);
     List<LegalCase> findAll();
     List<LegalCase> findByRelatedUserId(Long userId);
+
+    java.math.BigDecimal sumTotalCaseValue();
+    java.math.BigDecimal sumTotalCaseValueByAssignedLawyerId(Long userId);
+    Long countByAssignedLawyerId(Long userId);
+    long count();
 }

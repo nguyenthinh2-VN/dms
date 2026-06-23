@@ -64,7 +64,7 @@ public class ReminderUseCase {
 
     public List<ReminderResponse> getUpcomingReminders(User currentUser) {
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.ofHours(7));
-        return reminderRepository.findTop3ByUserAndIsCompletedFalseAndDeadlineAfterOrderByDeadlineAsc(currentUser, now)
+        return reminderRepository.findTop10ByUserAndIsCompletedFalseAndDeadlineAfterOrderByDeadlineAsc(currentUser, now)
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());

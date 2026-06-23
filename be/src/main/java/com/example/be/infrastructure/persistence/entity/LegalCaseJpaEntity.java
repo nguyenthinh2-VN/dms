@@ -49,17 +49,14 @@ public class LegalCaseJpaEntity {
     @JoinColumn(name = "assigned_lawyer_id")
     private UserJpaEntity assignedLawyer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "partner_id")
-    private UserJpaEntity partner;
+    @Column(name = "partner_name")
+    private String partnerName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "intern_lawyer_id")
-    private UserJpaEntity internLawyer;
+    @Column(name = "intern_lawyer_name")
+    private String internLawyerName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trainee_id")
-    private UserJpaEntity trainee;
+    @Column(name = "trainee_name")
+    private String traineeName;
 
     @Column(nullable = false)
     private BigDecimal caseValue;

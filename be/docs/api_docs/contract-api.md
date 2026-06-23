@@ -138,12 +138,13 @@ Merge dữ liệu, sinh và lưu trữ file cứng (DOCX, PDF) lên ổ đĩa/cl
     {
       "id": 5,
       "contractNo": "HD-2026-0001",
+      "templateId": 1,
+      "templateName": "Hợp đồng tư vấn",
+      "legalCaseId": 100,
       "status": "FINALIZED",
-      "createdAt": "2026-06-18T10:00:00Z",
-      "downloadUrl": {
-        "docx": "/api/v1/contracts/5/download/docx",
-        "pdf": "/api/v1/contracts/5/download/pdf"
-      }
+      "createdBy": 1,
+      "creatorName": "Admin",
+      "createdAt": "2026-06-18T10:00:00Z"
     }
   ]
 }

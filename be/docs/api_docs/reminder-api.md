@@ -40,9 +40,9 @@ Mỗi nhắc hạn chỉ được xem và quản lý bởi user tạo ra nó. Nh
 
 ---
 
-## 2. Lấy 3 Nhắc hạn sắp tới (Upcoming Reminders)
+## 2. Lấy 10 Nhắc hạn sắp tới (Upcoming Reminders)
 API này dùng để FE gọi nhằm lấy danh sách các nhắc hạn sắp tới để hiển thị thông báo (topup) cho user.
-Nó chỉ trả về tối đa **3 nhắc hạn gần nhất**, có deadline **trong tương lai** (so với thời điểm hiện tại), và **chưa được đánh dấu hoàn thành** (`isCompleted = false`). Danh sách được sắp xếp theo thời hạn tăng dần (gần nhất lên đầu).
+Nó chỉ trả về tối đa **10 nhắc hạn gần nhất**, có deadline **trong tương lai** (so với thời điểm hiện tại), và **chưa được đánh dấu hoàn thành** (`isCompleted = false`). Danh sách được sắp xếp theo thời hạn tăng dần (gần nhất lên đầu).
 
 - **URL:** `/api/v1/reminders/upcoming`
 - **Method:** `GET`

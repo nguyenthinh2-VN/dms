@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ReminderRepository {
     Reminder save(Reminder reminder);
     Optional<Reminder> findById(Long id);
-    List<Reminder> findTop3ByUserAndIsCompletedFalseAndDeadlineAfterOrderByDeadlineAsc(User user, OffsetDateTime now);
+    List<Reminder> findTop10ByUserAndIsCompletedFalseAndDeadlineAfterOrderByDeadlineAsc(User user, OffsetDateTime now);
 }

@@ -55,19 +55,19 @@ public class AssignCaseUseCase {
                     }
                     break;
                 case "PARTNER":
-                    legalCase.setPartner(assignee);
+                    legalCase.setPartnerName(assignee.getFullName());
                     if (req.getCommissionPercent() != null) {
                         legalCase.setPartnerPercent(req.getCommissionPercent());
                     }
                     break;
                 case "INTERN_LAWYER":
-                    legalCase.setInternLawyer(assignee);
+                    legalCase.setInternLawyerName(assignee.getFullName());
                     if (req.getCommissionPercent() != null) {
                         legalCase.setInternPercent(req.getCommissionPercent());
                     }
                     break;
                 case "TRAINEE":
-                    legalCase.setTrainee(assignee);
+                    legalCase.setTraineeName(assignee.getFullName());
                     if (req.getCommissionPercent() != null) {
                         legalCase.setTraineePercent(req.getCommissionPercent());
                     }
@@ -148,22 +148,16 @@ public class AssignCaseUseCase {
                     }
                     break;
                 case "PARTNER":
-                    if (legalCase.getPartner() != null && legalCase.getPartner().getId().equals(assigneeId)) {
-                        legalCase.setPartner(null);
-                        legalCase.setPartnerPercent(0.0);
-                    }
+                    legalCase.setPartnerName(null);
+                    legalCase.setPartnerPercent(0.0);
                     break;
                 case "INTERN_LAWYER":
-                    if (legalCase.getInternLawyer() != null && legalCase.getInternLawyer().getId().equals(assigneeId)) {
-                        legalCase.setInternLawyer(null);
-                        legalCase.setInternPercent(0.0);
-                    }
+                    legalCase.setInternLawyerName(null);
+                    legalCase.setInternPercent(0.0);
                     break;
                 case "TRAINEE":
-                    if (legalCase.getTrainee() != null && legalCase.getTrainee().getId().equals(assigneeId)) {
-                        legalCase.setTrainee(null);
-                        legalCase.setTraineePercent(0.0);
-                    }
+                    legalCase.setTraineeName(null);
+                    legalCase.setTraineePercent(0.0);
                     break;
             }
         }

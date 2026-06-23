@@ -45,6 +45,16 @@ public class ContractRepositoryImpl implements ContractRepository {
         return springDataRepository.existsByContractNo(contractNo);
     }
 
+    @Override
+    public long count() {
+        return springDataRepository.count();
+    }
+
+    @Override
+    public Long countByCreatedBy(Long createdBy) {
+        return springDataRepository.countByCreatedBy(createdBy);
+    }
+
     private ContractJpaEntity mapToJpaEntity(Contract domain) {
         if (domain == null) return null;
         ContractJpaEntity jpa = new ContractJpaEntity();

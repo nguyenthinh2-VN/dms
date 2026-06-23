@@ -8,5 +8,5 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface SpringDataReminderRepository extends JpaRepository<ReminderJpaEntity, Long> {
-    List<ReminderJpaEntity> findTop3ByUserAndIsCompletedFalseAndDeadlineAfterOrderByDeadlineAsc(UserJpaEntity user, OffsetDateTime now);
+    List<ReminderJpaEntity> findTop10ByUserAndIsCompletedFalseAndDeadlineAfterOrderByDeadlineAsc(UserJpaEntity user, OffsetDateTime now);
 }

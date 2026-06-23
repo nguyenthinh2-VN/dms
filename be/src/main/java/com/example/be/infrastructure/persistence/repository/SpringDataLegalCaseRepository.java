@@ -11,10 +11,16 @@ import java.util.List;
 @Repository
 public interface SpringDataLegalCaseRepository extends JpaRepository<LegalCaseJpaEntity, Long> {
 
-    @Query("SELECT lc FROM LegalCaseJpaEntity lc WHERE " +
-           "lc.assignedLawyer.id = :userId OR " +
-           "lc.partner.id = :userId OR " +
-           "lc.internLawyer.id = :userId OR " +
-           "lc.trainee.id = :userId")
+    @Query("SELECT DISTINCT lc FROM LegalCaseJpaEntity lc " +
+           "LEFT JOIN CaseAssignmentJpaEntity ca ON ca.legalCase.id = lc.id " +
+           "WHERE lc.assignedLawyer.id = :userId OR ca.assignee.id = :userId")
     List<LegalCaseJpaEntity> findByRelatedUserId(@Param("userId") Long userId);
+
+    @Query("SELECT SUM(lc.caseValue) FROM LegalCaseJpaEntity lc")
+    java.math.BigDecimal sumTotalCaseValue();
+
+    @Query("SELECT SUM(lc.caseValue) FROM LegalCaseJpaEntity lc WHERE lc.assignedLawyer.id = :userId")
+    java.math.BigDecimal sumTotalCaseValueByAssignedLawyerId(@Param("userId") Long userId);
+
+    Long countByAssignedLawyerId(Long userId);
 }

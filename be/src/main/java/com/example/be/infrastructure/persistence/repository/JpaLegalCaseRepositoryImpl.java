@@ -48,6 +48,26 @@ public class JpaLegalCaseRepositoryImpl implements LegalCaseRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public java.math.BigDecimal sumTotalCaseValue() {
+        return springDataLegalCaseRepository.sumTotalCaseValue();
+    }
+
+    @Override
+    public java.math.BigDecimal sumTotalCaseValueByAssignedLawyerId(Long userId) {
+        return springDataLegalCaseRepository.sumTotalCaseValueByAssignedLawyerId(userId);
+    }
+
+    @Override
+    public Long countByAssignedLawyerId(Long userId) {
+        return springDataLegalCaseRepository.countByAssignedLawyerId(userId);
+    }
+
+    @Override
+    public long count() {
+        return springDataLegalCaseRepository.count();
+    }
+
     private LegalCaseJpaEntity toJpaEntity(LegalCase domain) {
         if (domain == null) return null;
         
@@ -60,9 +80,9 @@ public class JpaLegalCaseRepositoryImpl implements LegalCaseRepository {
                 .description(domain.getDescription())
                 .referrerName(domain.getReferrerName())
                 .assignedLawyer(toUserJpaEntity(domain.getAssignedLawyer()))
-                .partner(toUserJpaEntity(domain.getPartner()))
-                .internLawyer(toUserJpaEntity(domain.getInternLawyer()))
-                .trainee(toUserJpaEntity(domain.getTrainee()))
+                .partnerName(domain.getPartnerName())
+                .internLawyerName(domain.getInternLawyerName())
+                .traineeName(domain.getTraineeName())
                 .caseValue(domain.getCaseValue())
                 .paymentStatus(domain.getPaymentStatus())
                 .status(domain.getStatus())
@@ -88,9 +108,9 @@ public class JpaLegalCaseRepositoryImpl implements LegalCaseRepository {
                 .description(entity.getDescription())
                 .referrerName(entity.getReferrerName())
                 .assignedLawyer(toUserDomainEntity(entity.getAssignedLawyer()))
-                .partner(toUserDomainEntity(entity.getPartner()))
-                .internLawyer(toUserDomainEntity(entity.getInternLawyer()))
-                .trainee(toUserDomainEntity(entity.getTrainee()))
+                .partnerName(entity.getPartnerName())
+                .internLawyerName(entity.getInternLawyerName())
+                .traineeName(entity.getTraineeName())
                 .caseValue(entity.getCaseValue())
                 .paymentStatus(entity.getPaymentStatus())
                 .status(entity.getStatus())

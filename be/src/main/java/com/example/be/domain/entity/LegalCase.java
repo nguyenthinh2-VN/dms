@@ -29,9 +29,9 @@ public class LegalCase {
     private String referrerName;
     
     private User assignedLawyer;
-    private User partner;
-    private User internLawyer;
-    private User trainee;
+    private String partnerName;
+    private String internLawyerName;
+    private String traineeName;
     
     private BigDecimal caseValue;
     

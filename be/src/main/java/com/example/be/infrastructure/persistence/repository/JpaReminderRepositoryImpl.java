@@ -36,12 +36,12 @@ public class JpaReminderRepositoryImpl implements ReminderRepository {
     }
 
     @Override
-    public List<Reminder> findTop3ByUserAndIsCompletedFalseAndDeadlineAfterOrderByDeadlineAsc(User user, OffsetDateTime now) {
+    public List<Reminder> findTop10ByUserAndIsCompletedFalseAndDeadlineAfterOrderByDeadlineAsc(User user, OffsetDateTime now) {
         UserJpaEntity userEntity = null;
         if (user != null) {
             userEntity = UserJpaEntity.builder().id(user.getId()).build();
         }
-        return springDataRepository.findTop3ByUserAndIsCompletedFalseAndDeadlineAfterOrderByDeadlineAsc(userEntity, now)
+        return springDataRepository.findTop10ByUserAndIsCompletedFalseAndDeadlineAfterOrderByDeadlineAsc(userEntity, now)
                 .stream()
                 .map(this::toDomainEntity)
                 .collect(Collectors.toList());

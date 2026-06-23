@@ -25,9 +25,9 @@ public class CreateCaseRequest {
     private String description;
     private String referrerName;
     
-    private Long partnerId;
-    private Long internLawyerId;
-    private Long traineeId;
+    private String partnerName;
+    private String internLawyerName;
+    private String traineeName;
     
     @Min(value = 0, message = "Giá trị vụ việc phải lớn hơn hoặc bằng 0")
     private BigDecimal caseValue;

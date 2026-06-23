@@ -104,9 +104,9 @@
   "partnerPercent": 0,
   "internPercent": 0,
   "traineePercent": 0,
-  "partnerId": null,
-  "internLawyerId": null,
-  "traineeId": null
+  "partnerName": "Ông C",
+  "internLawyerName": "Thực tập sinh D",
+  "traineeName": "Trainee E"
 }
 ```
 
@@ -198,9 +198,9 @@
   "traineePercent": 1.0,
   "status": "PROCESSING",
   "paymentStatus": "PAID",
-  "partnerId": 5,
-  "internLawyerId": 6,
-  "traineeId": 7
+  "partnerName": "Luật sư F",
+  "internLawyerName": "TTS G",
+  "traineeName": null
 }
 ```
 

@@ -25,10 +25,14 @@ public class CaseUseCase {
 
     private final LegalCaseRepository legalCaseRepository;
     private final UserRepository userRepository;
+    private final com.example.be.domain.repository.CaseAssignmentRepository caseAssignmentRepository;
 
-    public CaseUseCase(LegalCaseRepository legalCaseRepository, UserRepository userRepository) {
+    public CaseUseCase(LegalCaseRepository legalCaseRepository, 
+                       UserRepository userRepository,
+                       com.example.be.domain.repository.CaseAssignmentRepository caseAssignmentRepository) {
         this.legalCaseRepository = legalCaseRepository;
         this.userRepository = userRepository;
+        this.caseAssignmentRepository = caseAssignmentRepository;
     }
 
     public CaseResponse createCase(CreateCaseRequest request, User currentUser) {
@@ -43,10 +47,6 @@ public class CaseUseCase {
         String dateStr = LocalDate.now().format(DateTimeFormatter.ofPattern("ddMMyy"));
         String generatedTitle = String.format("%s_%s_%s_%s", request.getTitle(), categoryEnum.getDescription(), dateStr, currentUser.getFullName());
 
-        User partner = request.getPartnerId() != null ? userRepository.findById(request.getPartnerId()).orElse(null) : null;
-        User intern = request.getInternLawyerId() != null ? userRepository.findById(request.getInternLawyerId()).orElse(null) : null;
-        User trainee = request.getTraineeId() != null ? userRepository.findById(request.getTraineeId()).orElse(null) : null;
-
         LegalCase newCase = LegalCase.builder()
                 .generatedTitle(generatedTitle)
                 .title(request.getTitle())
@@ -55,9 +55,9 @@ public class CaseUseCase {
                 .description(request.getDescription())
                 .referrerName(request.getReferrerName())
                 .assignedLawyer(currentUser)
-                .partner(partner)
-                .internLawyer(intern)
-                .trainee(trainee)
+                .partnerName(request.getPartnerName())
+                .internLawyerName(request.getInternLawyerName())
+                .traineeName(request.getTraineeName())
                 .caseValue(request.getCaseValue() != null ? request.getCaseValue() : BigDecimal.ZERO)
                 .referrerPercent(request.getReferrerPercent() != null ? request.getReferrerPercent() : 0.0)
                 .assignedLawyerPercent(request.getAssignedLawyerPercent() != null ? request.getAssignedLawyerPercent() : 0.0)
@@ -132,13 +132,9 @@ public class CaseUseCase {
             legalCase.setPaymentStatus(PaymentStatus.valueOf(request.getPaymentStatus()));
         }
 
-        User partner = request.getPartnerId() != null ? userRepository.findById(request.getPartnerId()).orElse(null) : null;
-        User intern = request.getInternLawyerId() != null ? userRepository.findById(request.getInternLawyerId()).orElse(null) : null;
-        User trainee = request.getTraineeId() != null ? userRepository.findById(request.getTraineeId()).orElse(null) : null;
-
-        legalCase.setPartner(partner);
-        legalCase.setInternLawyer(intern);
-        legalCase.setTrainee(trainee);
+        legalCase.setPartnerName(request.getPartnerName());
+        legalCase.setInternLawyerName(request.getInternLawyerName());
+        legalCase.setTraineeName(request.getTraineeName());
 
         LegalCase savedCase = legalCaseRepository.save(legalCase);
         return toCaseResponse(savedCase);
@@ -150,9 +146,11 @@ public class CaseUseCase {
 
         Long userId = user.getId();
         if (legalCase.getAssignedLawyer() != null && legalCase.getAssignedLawyer().getId().equals(userId)) return true;
-        if (legalCase.getPartner() != null && legalCase.getPartner().getId().equals(userId)) return true;
-        if (legalCase.getInternLawyer() != null && legalCase.getInternLawyer().getId().equals(userId)) return true;
-        if (legalCase.getTrainee() != null && legalCase.getTrainee().getId().equals(userId)) return true;
+        
+        List<com.example.be.domain.entity.CaseAssignment> assignments = caseAssignmentRepository.findByCaseIdAndAssigneeId(legalCase.getId(), userId);
+        if (assignments != null && !assignments.isEmpty()) {
+            return true;
+        }
 
         return false;
     }
@@ -178,9 +176,9 @@ public class CaseUseCase {
                 .description(legalCase.getDescription())
                 .referrerName(legalCase.getReferrerName())
                 .assignedLawyer(toStaffDto(legalCase.getAssignedLawyer()))
-                .partner(toStaffDto(legalCase.getPartner()))
-                .internLawyer(toStaffDto(legalCase.getInternLawyer()))
-                .trainee(toStaffDto(legalCase.getTrainee()))
+                .partnerName(legalCase.getPartnerName())
+                .internLawyerName(legalCase.getInternLawyerName())
+                .traineeName(legalCase.getTraineeName())
                 .caseValue(caseVal)
                 .paymentStatus(legalCase.getPaymentStatus())
                 .status(legalCase.getStatus())
