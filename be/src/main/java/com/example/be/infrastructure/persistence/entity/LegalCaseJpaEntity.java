@@ -58,6 +58,12 @@ public class LegalCaseJpaEntity {
     @Column(name = "trainee_name")
     private String traineeName;
 
+    @Column(name = "created_by")
+    private Long createdBy;
+
+    @Column(name = "creator_name")
+    private String creatorName;
+
     @Column(nullable = false)
     private BigDecimal caseValue;
 

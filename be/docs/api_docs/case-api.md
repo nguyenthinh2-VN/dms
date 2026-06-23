@@ -133,6 +133,8 @@
     "status": "NEW",
     "paymentStatus": "UNPAID",
     "netValue": 70000000.0
+    "createdBy": 1,
+    "creatorName": "Nguyen Van A"
     // ... trả về chi tiết CaseResponse (Hoa hồng, tiền Net)
   }
 }

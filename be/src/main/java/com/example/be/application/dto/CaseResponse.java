@@ -28,6 +28,9 @@ public class CaseResponse {
     private String internLawyerName;
     private String traineeName;
     
+    private Long createdBy;
+    private String creatorName;
+    
     private BigDecimal caseValue;
     private PaymentStatus paymentStatus;
     private CaseStatus status;

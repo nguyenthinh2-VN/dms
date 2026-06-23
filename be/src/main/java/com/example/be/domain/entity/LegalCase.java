@@ -33,6 +33,9 @@ public class LegalCase {
     private String internLawyerName;
     private String traineeName;
     
+    private Long createdBy;
+    private String creatorName;
+    
     private BigDecimal caseValue;
     
     @Builder.Default
